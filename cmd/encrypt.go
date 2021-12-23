@@ -5,36 +5,56 @@ Copyright © 2021 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
+
+	"github.com/rstudio/rskey/crypt"
 )
 
-// encryptCmd represents the encrypt command
 var encryptCmd = &cobra.Command{
 	Use:   "encrypt",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Encrypt sensitive data",
+	Long: `Use a RStudio Connect/Package Manager key to encrypt data passed on
+standard output.`,
+	RunE: runEncrypt,
+}
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("encrypt called")
-	},
+func runEncrypt(cmd *cobra.Command, args []string) error {
+	keyfile := cmd.Flag("keyfile").Value.String()
+	if keyfile == "" {
+		return fmt.Errorf("keyfile is missing but must be provided")
+	}
+	f, err := os.Open(keyfile)
+	if err != nil {
+		return err
+	}
+	key, err := crypt.NewKeyFromReader(f)
+	if err != nil {
+		return err
+	}
+	// Check if there's actually data in standard input.
+	info, err := os.Stdin.Stat()
+	if err != nil {
+		return err
+	}
+	if info.Mode()&os.ModeNamedPipe == 0 {
+		return fmt.Errorf("No input")
+	}
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		cipher, err := key.Encrypt(scanner.Text())
+		if err != nil {
+			return err
+		}
+		fmt.Fprintf(cmd.OutOrStdout(), "%s\n", cipher)
+	}
+	return nil
 }
 
 func init() {
 	rootCmd.AddCommand(encryptCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// encryptCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// encryptCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	encryptCmd.Flags().StringP("keyfile", "f", "", "Use the given key file")
 }
