@@ -103,7 +103,7 @@ func (k *Key) Decrypt(s string) (string, error) {
 // key.
 func (k *Key) key32() *[32]byte {
 	var key [32]byte
-	copy(k[0:32], key[:])
+	copy(key[:], k[0:32])
 	return &key
 }
 
