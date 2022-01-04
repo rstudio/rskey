@@ -33,8 +33,9 @@ func NewKeyFromBytes(src []byte) (*Key, error) {
 	if _, err := hex.Decode(data, src); err != nil {
 		// Try base64 encoding instead.
 		data = make([]byte, base64.StdEncoding.DecodedLen(size))
-		_, err = base64.StdEncoding.Decode(data, src)
-		if err != nil {
+		_, b64err := base64.StdEncoding.Decode(data, src)
+		if b64err != nil {
+			// Return the original hex-encoding error.
 			return nil, fmt.Errorf("failed to decode secret: %v", err)
 		}
 	}
