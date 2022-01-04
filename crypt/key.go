@@ -75,6 +75,12 @@ func (k *Key) HexString() string {
 	return hex.EncodeToString(data)
 }
 
+func (k *Key) Base64String() string {
+	// For historical reasons, we always rotate outgoing data.
+	data := rotate(k[:])
+	return base64.StdEncoding.EncodeToString(data)
+}
+
 // Encrypt implements the Crypt interface.
 func (k *Key) Encrypt(s string) (string, error) {
 	var nonce [24]byte

@@ -71,6 +71,7 @@ func (s *KeySuite) TestKeyRotation(c *check.C) {
 	key, _ := NewKeyFromBytes([]byte(sampleKey))
 	// Writing out the key should yield the original sample.
 	c.Check(key.HexString(), check.DeepEquals, sampleKey)
+	c.Check(key.Base64String(), check.DeepEquals, sampleKeyB64)
 
 	// Construct the Key byte array manually.
 	var rawKey Key
@@ -80,6 +81,7 @@ func (s *KeySuite) TestKeyRotation(c *check.C) {
 
 	// Writing out the raw key should yield the original (unrotated) sample.
 	c.Check(rawKey.HexString(), check.DeepEquals, sampleKey)
+	c.Check(rawKey.Base64String(), check.DeepEquals, sampleKeyB64)
 }
 
 func (s *KeySuite) TestEncryption(c *check.C) {
