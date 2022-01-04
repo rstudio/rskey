@@ -83,7 +83,7 @@ func (k *Key) Encrypt(s string) (string, error) {
 func (k *Key) Decrypt(s string) (string, error) {
 	buf, err := base64.StdEncoding.DecodeString(s)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("invalid decryption payload: %v", err)
 	}
 	if len(buf) < 24+secretbox.Overhead {
 		return "", ErrPayLoadTooShort
