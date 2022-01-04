@@ -16,11 +16,15 @@ const (
 type KeySuite struct{}
 
 func (s *KeySuite) TestNewKey(c *check.C) {
-	_, err := NewKeyFromBytes([]byte("not hex"))
+	_, err := NewKeyFromBytes([]byte("too short"))
+	c.Check(err, check.Not(check.IsNil))
+	c.Check(err, check.Equals, ErrInvalidKeyLength)
+
+	_, err = NewKeyFromBytes([]byte(strings.Repeat("not hex", 100)))
 	c.Check(err, check.Not(check.IsNil))
 	c.Check(err, check.ErrorMatches, `failed to decode secret: encoding\/hex.+`)
 
-	_, err = NewKeyFromBytes([]byte(sampleKey[0:32]))
+	_, err = NewKeyFromBytes([]byte(sampleKey[0:1022]))
 	c.Check(err, check.Equals, ErrInvalidKeyLength)
 
 	key, err := NewKeyFromBytes([]byte(sampleKey))

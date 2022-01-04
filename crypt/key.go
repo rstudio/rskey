@@ -11,7 +11,11 @@ import (
 	"golang.org/x/crypto/nacl/secretbox"
 )
 
-const KeyLength = 512
+const (
+	KeyLength = 512
+	// The length of unpadded base64, the shortest supported encoding.
+	minEncodedLength = KeyLength * 6 / 8
+)
 
 var (
 	ErrInvalidKeyLength = errors.New("Encryption keys must be 512 bytes when decoded")
@@ -29,6 +33,10 @@ func NewKey() (*Key, error) {
 
 func NewKeyFromBytes(src []byte) (*Key, error) {
 	size := len(src)
+	if size < minEncodedLength {
+		// The input is too short, no matter the encoding.
+		return nil, ErrInvalidKeyLength
+	}
 	data := make([]byte, hex.DecodedLen(size))
 	if _, err := hex.Decode(data, src); err != nil {
 		// Try base64 encoding instead.
