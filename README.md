@@ -8,6 +8,14 @@ It can be used to help manage secrets without the need to install these products
 first, and is designed for use in Infrastructure-as-Code and containerised
 deployments of these products.
 
+This tool can also serve as a drop-in replacement for RStudio Connect's
+`rscadmin configure --encrypt-config-value`
+[command](https://docs.rstudio.com/connect/admin/appendix/cli/#rscadmin) and for
+Package Manager's `rspm encrypt`
+[command](https://docs.rstudio.com/rspm/admin/appendix/encryption/#rspm-encrypt).
+
+No local license keys are required, either.
+
 **This is not a general-purpose encryption tool.**
 
 ## Usage
