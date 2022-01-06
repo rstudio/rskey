@@ -1,3 +1,5 @@
+// Package crypt implements the secret key-based encryption and decryption
+// scheme used by RStudio's Connect and Package Manager products.
 package crypt
 
 import (
@@ -12,25 +14,34 @@ import (
 )
 
 const (
+	// The fixed length of a Key, in bytes.
 	KeyLength = 512
 	// The length of unpadded base64, the shortest supported encoding.
 	minEncodedLength = KeyLength * 6 / 8
 )
 
 var (
+	// ErrInvalidKeyLength reports a malformed Key input.
 	ErrInvalidKeyLength = errors.New("Encryption keys must be 512 bytes when decoded")
-	ErrPayLoadTooShort  = errors.New(fmt.Sprintf("Encrypted payloads must be at least %d bytes", 24+secretbox.Overhead))
-	ErrFailedToDecrypt  = errors.New("Decryption failed")
+	// ErrPayLoadTooShort reports malformed cipher text.
+	ErrPayLoadTooShort = errors.New(fmt.Sprintf("Encrypted payloads must be at least %d bytes", 24+secretbox.Overhead))
+	// ErrFailedToDecrypt reports a failure to decrypt a given cipher text with a
+	// given Key via Decrypt().
+	ErrFailedToDecrypt = errors.New("Decryption failed")
 )
 
+// Key is a securely-generated, opaque byte array that can be used a persistent
+// secret when encrypting data.
 type Key [KeyLength]byte
 
+// NewKey returns a newly-generated key, or an error if one cannot be generated.
 func NewKey() (*Key, error) {
 	var key Key
 	_, err := rand.Read(key[:])
 	return &key, err
 }
 
+// NewKeyFromBytes returns the key read from the given byte slice, or an error.
 func NewKeyFromBytes(src []byte) (*Key, error) {
 	size := len(src)
 	if size < minEncodedLength {
@@ -61,6 +72,7 @@ func NewKeyFromBytes(src []byte) (*Key, error) {
 	return &key, nil
 }
 
+// NewKeyFromReader returns the key read from an io.Reader, or an error.
 func NewKeyFromReader(src io.Reader) (*Key, error) {
 	bytes, err := io.ReadAll(src)
 	if err != nil {
@@ -69,6 +81,8 @@ func NewKeyFromReader(src io.Reader) (*Key, error) {
 	return NewKeyFromBytes(bytes)
 }
 
+// HexString produces a hex-encoded version of the key suitable for writing to
+// disk.
 func (k *Key) HexString() string {
 	// For historical reasons, we always rotate outgoing data.
 	data := rotate(k[:])
@@ -82,6 +96,8 @@ func (k *Key) base64String() string {
 	return base64.StdEncoding.EncodeToString(data)
 }
 
+// Encrypt produces base64-encoded cipher text for the given payload and key, or
+// an error if one cannot be created.
 func (k *Key) Encrypt(s string) (string, error) {
 	var nonce [24]byte
 	_, err := rand.Read(nonce[:])
@@ -95,6 +111,8 @@ func (k *Key) Encrypt(s string) (string, error) {
 	return base64.StdEncoding.EncodeToString(output), nil
 }
 
+// Decrypt takes base64-encoded cipher text encrypted with the given key and
+// returns the original clear text, or an error.
 func (k *Key) Decrypt(s string) (string, error) {
 	buf, err := base64.StdEncoding.DecodeString(s)
 	if err != nil {
