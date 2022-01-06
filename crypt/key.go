@@ -75,13 +75,13 @@ func (k *Key) HexString() string {
 	return hex.EncodeToString(data)
 }
 
-func (k *Key) Base64String() string {
+// Internal base64 encoding utility, the equivalent of HexString().
+func (k *Key) base64String() string {
 	// For historical reasons, we always rotate outgoing data.
 	data := rotate(k[:])
 	return base64.StdEncoding.EncodeToString(data)
 }
 
-// Encrypt implements the Crypt interface.
 func (k *Key) Encrypt(s string) (string, error) {
 	var nonce [24]byte
 	_, err := rand.Read(nonce[:])
@@ -95,7 +95,6 @@ func (k *Key) Encrypt(s string) (string, error) {
 	return base64.StdEncoding.EncodeToString(output), nil
 }
 
-// Decrypt implements the Crypt interface.
 func (k *Key) Decrypt(s string) (string, error) {
 	buf, err := base64.StdEncoding.DecodeString(s)
 	if err != nil {
