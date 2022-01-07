@@ -5,6 +5,10 @@ GO_LDFLAGS = -s -w
 # static binaries.
 GO_BUILD_ARGS = -v -tags "netgo"
 
+GOPATH = `go env GOPATH`
+ADDLICENSE = $(GOPATH)/bin/addlicense
+ADDLICENSE_ARGS = -v -s=only -l=apache -c "RStudio, PBC" -ignore 'coverage.html' -ignore '.github/**' -ignore '.goreleaser.yaml'
+
 all: rskey
 
 .PHONY: rskey
@@ -30,6 +34,14 @@ fmt:
 .PHONY: vet
 vet:
 	GO111MODULE=on go vet ./...
+
+.PHONY: check-license
+check-license:
+	GO111MODULE=on $(ADDLICENSE) $(ADDLICENSE_ARGS) -check .
+
+.PHONY: license
+license:
+	GO111MODULE=on $(ADDLICENSE) $(ADDLICENSE_ARGS) .
 
 .PHONY: clean
 clean:

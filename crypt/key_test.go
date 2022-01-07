@@ -1,3 +1,6 @@
+// Copyright 2022 RStudio, PBC
+// SPDX-License-Identifier: Apache-2.0
+
 package crypt
 
 import (

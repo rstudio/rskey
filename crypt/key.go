@@ -1,3 +1,6 @@
+// Copyright 2022 RStudio, PBC
+// SPDX-License-Identifier: Apache-2.0
+
 // Package crypt implements the secret key-based encryption and decryption
 // scheme used by RStudio's Connect and Package Manager products.
 package crypt

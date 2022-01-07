@@ -1,7 +1,6 @@
-/*
-Copyright © 2021 NAME HERE <EMAIL ADDRESS>
+// Copyright 2022 RStudio, PBC
+// SPDX-License-Identifier: Apache-2.0
 
-*/
 package cmd
 
 import (
