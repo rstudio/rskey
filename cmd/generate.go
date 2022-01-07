@@ -17,7 +17,12 @@ var generateCmd = &cobra.Command{
 	Use:   "generate",
 	Short: "Generate new keys",
 	Long: `Write a newly-generated RStudio Connect/Package Manager key to
-standard output, or a given output file.`,
+standard output, or a given output file.
+
+Examples:
+  rskey generate > /var/lib/rstudio-pm/rstudio-pm.key
+  rskey generate -o /var/lib/rstudio-pm/rstudio-pm.key
+`,
 	RunE: runGenerate,
 }
 

@@ -19,7 +19,12 @@ var decryptCmd = &cobra.Command{
 	Use:   "decrypt",
 	Short: "Decrypt previously-decrypted data",
 	Long: `Use a RStudio Connect/Package Manager key to decrypt data passed on
-standard output.`,
+standard output.
+
+Examples:
+  echo "G8QSoVOR936MjjMdjFqvXYqM+m1zwH0H/aX0fO5RGg0logwPOhME0Wz0sp9g4fMtYdw=" | \
+    rskey decrypt -f /var/lib/rstudio-pm/rstudio-pm.key
+`,
 	RunE: runDecrypt,
 }
 
