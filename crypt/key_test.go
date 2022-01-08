@@ -2,6 +2,7 @@ package crypt
 
 import (
 	"encoding/hex"
+	"fmt"
 	"strings"
 	"testing"
 
@@ -13,6 +14,14 @@ const (
 	sampleKeyB64   = "6cxjdvcuRVa1GwoslieoeoR82uUhMwIVMemaqdLe3VMq7UXIKysZHW6M24jBJXQNs7rDrHn3v74PGIWEYlT4/UMiuqUghaJhEfv1RstSUC6fFgIJ2wE0Z0sC7WNz1WiF/HXstRFQd3mcJvIZYMaJaLJTEKeS5ftKdAXtIX2lkn4hNIYF8R1xRm0e8xxmx6hvp+7Q9eQLnniY4633x4TeedWuoyStAbocZ9Anm6gIYIeGMb8brHR2Hp67gW0gEMtmkUMIT+Cqq9s4k/E/M1z6WFqjq8d0y8+l495NAwqRYvUz7ATNOp4C8JyN7F/9rl6v21XROILZ0DvaTGGuoi6vdcHqn4YA4ShCfoGH3w9Cy1Wweq5Gab9T+LXooNYYCQLVjZ+6NCYbDKu/1T9fTEk2gUcmtdhTpNiItrOryLSbocb2YqYbyw+ws9qiBl/8qDnVaIdTL/iyqEQaLar4/3+E4p9IXWnzZD7yxoVAuxbqL6XjMoRdpC4VTVVW68linVMckxS/j8jFloI4bDm2JJ8cx0+CVLLf1FcX2WWKKsacOdrxwkGItxPEn4OzLd924fR+zSruPze7HqKOvkpeAlR4VzXrLvLOZKveYcNI33hJ8AUm2XO4smyRYayjnqF39sAtw4LVYSb4O7ELP8q2/Ihj8oRl5BGIYJM1eIp5Aa7rLR0="
 	sampleKeyBytes = "36af0cd68dfa9a3f90a5d54ff987d2ae5b15ff5bfe506db54b3d45c0f7600230454d3f1cf4423ca3b1efb428bbf1ab6496041ccf1657c56ad071a03abd37975d39f665cc053b7d027e5b8f92143b759040756da9a1d5eb0e6ebc32001c751251231cc90bce3318d9e6f22d704578560bddf36a734d8cdef4ab66828107714d17048a59669ebd0b92b277d6a2b9a4c7cfdd3a0f9cc1b5411bf743d72318edfbc70acdcc84d7d56575426ef8f8c7a81a5359589aa5731719bee46f5e0405ae1405fee3729b3fc38e65e7f09e9f498825317f1d74a41b6bb5713cb768bdd5f20d554938dba41f20dd93f32d968b22c77b110436be98f80d0f52fff2becdcd8ed5a11e83ba38df8247e2045558b62afc1436dfdad492b6d676466a8bcf7662ddddbca821655749bb767f60bc1ae1932a59213df26ab1761a07ebd913d11c6bf284782901c9bbb1db6fdaff1cd93c93084301b7ee769127d1c7e460f97591dac15b81f0e827bd2c0d1b4c19e62f1b6c3ef0ccc68c5b3ecb8e6f998a3fce77bdfe3cbce9c060e6ed7b49e157cc4362fbf6397990e13b12a500887efcdb5549a93c430e2eab64366870ab3ff967f2b6535f2b1da28a94ebe8d23b1c51dd25fe7880a73e1055f191a1c4d10abeaa6d61a72a9fa55c0dacd197d24e02c303e475a89fe5931ce1bac15c2ce4d82e8115d5932819265b0cc1af5703fc95025ea6688b55f27e"
 )
+
+// An io.Reader that always returns an error.
+type errReader struct{}
+
+// Read implements io.Reader.
+func (e *errReader) Read(p []byte) (n int, err error) {
+	return 0, fmt.Errorf("cannot read")
+}
 
 type KeySuite struct{}
 
@@ -65,6 +74,10 @@ RBgRUFc/JXLB8+dKlTJWEBF8BbBMW9Ej+eBNozE2IYs=`
 	c.Check(k, check.Not(check.IsNil))
 	// The io.Reader implementation should match the byte one.
 	c.Check(k, check.DeepEquals, key)
+
+	_, err = NewKeyFromReader(&errReader{})
+	c.Check(err, check.Not(check.IsNil))
+	c.Check(err, check.ErrorMatches, `cannot read`)
 }
 
 func (s *KeySuite) TestKeyRotation(c *check.C) {
