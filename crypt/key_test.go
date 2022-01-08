@@ -1,6 +1,7 @@
 package crypt
 
 import (
+	"crypto/rand"
 	"encoding/hex"
 	"fmt"
 	"strings"
@@ -78,6 +79,16 @@ RBgRUFc/JXLB8+dKlTJWEBF8BbBMW9Ej+eBNozE2IYs=`
 	_, err = NewKeyFromReader(&errReader{})
 	c.Check(err, check.Not(check.IsNil))
 	c.Check(err, check.ErrorMatches, `cannot read`)
+
+	// Swap out the standard library's crypto reader for the remainder of
+	// the tests so we can simulate a failure to generate random bits.
+	randReader := rand.Reader
+	rand.Reader = &errReader{}
+	defer func() { rand.Reader = randReader }()
+
+	k, err = NewKey()
+	c.Check(err, check.Not(check.IsNil))
+	c.Check(err, check.ErrorMatches, `cannot read`)
 }
 
 func (s *KeySuite) TestKeyRotation(c *check.C) {
@@ -116,6 +127,16 @@ func (s *KeySuite) TestEncryption(c *check.C) {
 	c.Check(err, check.IsNil)
 	text, err := key.Decrypt(cipher)
 	c.Check(text, check.Equals, "some secret")
+
+	// Swap out the standard library's crypto reader for the remainder of
+	// the tests so we can simulate a failure to generate random bits.
+	randReader := rand.Reader
+	rand.Reader = &errReader{}
+	defer func() { rand.Reader = randReader }()
+
+	_, err = key.Encrypt("some secret")
+	c.Check(err, check.Not(check.IsNil))
+	c.Check(err, check.ErrorMatches, `cannot read`)
 }
 
 func Test(t *testing.T) {
