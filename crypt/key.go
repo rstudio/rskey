@@ -30,7 +30,7 @@ var (
 	ErrFailedToDecrypt = errors.New("Decryption failed")
 )
 
-// Key is a securely-generated, opaque byte array that can be used a persistent
+// Key is a securely-generated, opaque byte array that can be used as a persistent
 // secret when encrypting data.
 type Key [KeyLength]byte
 
