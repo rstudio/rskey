@@ -18,7 +18,7 @@ var encryptCmd = &cobra.Command{
 	Use:   "encrypt",
 	Short: "Encrypt sensitive data",
 	Long: `Use a RStudio Connect/Package Manager key to encrypt data passed on
-standard output.
+standard input.
 
 Examples:
   echo "mypassword" | rskey encrypt -f /var/lib/rstudio-pm/rstudio-pm.key
