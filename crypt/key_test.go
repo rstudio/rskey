@@ -125,6 +125,7 @@ func (s *KeySuite) TestEncryption(c *check.C) {
 	// Roundtrip encryption test.
 	cipher, err := key.Encrypt("some secret")
 	c.Check(err, check.IsNil)
+	c.Check(err, check.Not(check.Equals), "some secret") // Just checking.
 	text, err := key.Decrypt(cipher)
 	c.Check(text, check.Equals, "some secret")
 
