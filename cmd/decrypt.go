@@ -37,6 +37,7 @@ func runDecrypt(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+	defer f.Close()
 	key, err := crypt.NewKeyFromReader(f)
 	if err != nil {
 		return err
