@@ -18,6 +18,11 @@ No local license keys are required, either.
 
 **This is not a general-purpose encryption tool.**
 
+## Installation
+
+Binary releases for Windows, macOS, and Linux are available [on
+GitHub](https://github.com/rstudio/rskey/releases).
+
 ## Usage
 
 You can generate keys with `rskey generate`. For example:
