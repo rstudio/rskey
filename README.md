@@ -60,6 +60,10 @@ $ rskey generate
 $ openssl rand -hex 512
 ```
 
+## API Stability and Versioning
+
+`rskey` and its packages follow strict semantic versioning.
+
 ## License
 
 TBD
