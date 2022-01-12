@@ -8,3 +8,8 @@ builds:
   - linux
   - windows
   - darwin
+archives:
+- files:
+  - LICENSE
+  - README.md
+  - NOTICE.md
