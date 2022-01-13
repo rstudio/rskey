@@ -8,6 +8,7 @@ GO_BUILD_ARGS = -v -tags "netgo" -trimpath
 GOPATH = `go env GOPATH`
 ADDLICENSE = $(GOPATH)/bin/addlicense
 ADDLICENSE_ARGS = -v -s=only -l=apache -c "RStudio, PBC" -ignore 'coverage*' -ignore '.github/**' -ignore '.goreleaser.yaml'
+NOTICETOOL = $(GOPATH)/bin/go-licence-detector
 
 all: rskey
 
@@ -44,6 +45,11 @@ check-license:
 .PHONY: license
 license:
 	GO111MODULE=on $(ADDLICENSE) $(ADDLICENSE_ARGS) .
+
+notice: NOTICE.md
+
+NOTICE.md: NOTICE.md.tmpl go.mod go.sum
+	go list -m -json all | $(NOTICETOOL) -noticeOut $@ -noticeTemplate $<
 
 .PHONY: clean
 clean:

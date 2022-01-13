@@ -13,8 +13,14 @@ those components and includes a full copy of their licenses.
 
 ### github.com/spf13/cobra
 
+Version: v1.3.0
+Time: 2021-12-14T18:22:51Z
+Licence: Apache-2.0
+
 ```
-Apache License
+Contents of probable licence file $GOMODCACHE/github.com/spf13/cobra@v1.3.0/LICENSE.txt:
+
+                                Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
 
@@ -192,7 +198,13 @@ Apache License
 
 ### golang.org/x/crypto
 
+Version: v0.0.0-20211215153901-e495a2d5b3d3
+Time: 2021-12-15T15:39:01Z
+Licence: BSD-3-Clause
+
 ```
+Contents of probable licence file $GOMODCACHE/golang.org/x/crypto@v0.0.0-20211215153901-e495a2d5b3d3/LICENSE:
+
 Copyright (c) 2009 The Go Authors. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -224,21 +236,27 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ### gopkg.in/check.v1
 
-```
-Gocheck - A rich testing framework for Go
+Version: v1.0.0-20201130134442-10cb98267c6c
+Time: 2020-11-30T13:44:42Z
+Licence: BSD-2-Clause
 
+```
+Contents of probable licence file $GOMODCACHE/gopkg.in/check.v1@v1.0.0-20201130134442-10cb98267c6c/LICENSE:
+
+Gocheck - A rich testing framework for Go
+ 
 Copyright (c) 2010-2013 Gustavo Niemeyer <gustavo@niemeyer.net>
 
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
+modification, are permitted provided that the following conditions are met: 
 
 1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
+   list of conditions and the following disclaimer. 
 2. Redistributions in binary form must reproduce the above copyright notice,
    this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
+   and/or other materials provided with the distribution. 
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -251,3 +269,4 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ```
+
