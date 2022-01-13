@@ -1,0 +1,30 @@
+{{- define "short" -}}
+{{- range $i, $dep := . }}
+* {{ $dep.Name }}
+{{- end -}}
+{{- end -}}
+
+{{- define "depInfo" -}}
+{{- range $i, $dep := . }}
+### {{ $dep.Name }}
+
+Version: {{ $dep.Version }}
+Time: {{ $dep.VersionTime }}
+Licence: {{ $dep.LicenceType }}
+
+```
+{{ $dep | licenceText -}}
+```
+{{ end }}
+{{- end -}}
+
+# Summary
+
+This software includes open-source software components. This document enumerates
+those components and includes a full copy of their licenses.
+
+## Components
+{{ template "short" .Direct }}
+
+## Licenses
+{{ template "depInfo" .Direct }}
