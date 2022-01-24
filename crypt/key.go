@@ -25,10 +25,13 @@ var (
 	// ErrInvalidKeyLength reports a malformed Key input.
 	ErrInvalidKeyLength = errors.New("Encryption keys must be 512 bytes when decoded")
 	// ErrPayLoadTooShort reports malformed cipher text.
-	ErrPayLoadTooShort = errors.New(fmt.Sprintf("Encrypted payloads must be at least %d bytes", minimumSecretboxLength))
+	ErrPayLoadTooShort = errors.New("Payload is too short to be encrypted")
 	// ErrFailedToDecrypt reports a failure to decrypt a given cipher text with a
 	// given Key via Decrypt().
 	ErrFailedToDecrypt = errors.New("Decryption failed")
+	// ErrFIPS reports encryption or decryption failures caused by running
+	// in FIPS mode.
+	ErrFIPS = errors.New("Non-AES algorithms cannot be used when running in FIPS mode")
 )
 
 // Key is a securely-generated, opaque byte array that can be used as a persistent
@@ -106,7 +109,13 @@ func (k *Key) Encrypt(s string) (string, error) {
 // EncryptBytes produces base64-encoded cipher text for the given bytes and key,
 // or an error if one cannot be created.
 func (k *Key) EncryptBytes(bytes []byte) (string, error) {
-	output, err := k.encryptSecretbox(bytes)
+	var output []byte
+	var err error
+	if FIPSMode {
+		output, err = k.encryptAES(bytes)
+	} else {
+		output, err = k.encryptSecretbox(bytes)
+	}
 	if err != nil {
 		return "", err
 	}
@@ -149,7 +158,12 @@ func (k *Key) DecryptBytes(s string) ([]byte, error) {
 	switch buf[0] {
 	case byte(1):
 		str, err := k.decryptSecretbox(buf[1:])
-		if err == nil {
+		if err == nil || FIPSMode {
+			return str, err
+		}
+	case byte(2):
+		str, err := k.decryptAES(buf)
+		if err == nil || FIPSMode {
 			return str, err
 		}
 	}

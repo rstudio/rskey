@@ -26,6 +26,8 @@ check: fmt vet
 test:
 	GO111MODULE=on go test ./... $(GO_BUILD_ARGS) -coverprofile coverage.out
 	go tool cover -html=coverage.out -o coverage.html
+	GO111MODULE=on go test ./... $(GO_BUILD_ARGS) -tags "fips" -coverprofile coverage-fips.out
+	go tool cover -html=coverage-fips.out -o coverage-fips.html
 
 .PHONY: fmt
 fmt:
