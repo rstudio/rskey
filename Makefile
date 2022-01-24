@@ -21,4 +21,4 @@ vet:
 
 .PHONY: clean
 clean:
-	rm -f $(CMD)
+	rm -f rskey
