@@ -1,7 +1,9 @@
 CGO_ENABLED = 0
 # Strip binaries by default to make them smaller.
 GO_LDFLAGS = -s -w
-GO_BUILD_ARGS = -v
+# Using the 'netgo' tag opts into the native implementation and allows for
+# static binaries.
+GO_BUILD_ARGS = -v -tags "netgo"
 
 all: rskey
 
@@ -9,6 +11,10 @@ all: rskey
 rskey:
 	GO111MODULE=on CGO_ENABLED=$(CGO_ENABLED) go build \
 		-ldflags="$(GO_LDFLAGS)" $(GO_BUILD_ARGS) -o $@ ./$<
+
+.PHONY: static-build
+static-build: rskey
+	ldd $< 2>&1 | grep 'not a dynamic executable'
 
 check: fmt vet
 
