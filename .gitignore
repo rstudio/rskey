@@ -1,4 +1,6 @@
 coverage.out
 coverage.html
+coverage-fips.out
+coverage-fips.html
 rskey
 dist/

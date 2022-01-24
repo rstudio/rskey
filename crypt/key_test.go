@@ -118,12 +118,16 @@ func (s *KeySuite) TestEncryption(c *check.C) {
 	_, err := key.Decrypt("not base64")
 	c.Check(err, check.ErrorMatches, `invalid decryption payload.+`)
 
-	_, err = key.Decrypt("ycKfTfYlVaOnsypb")
-	c.Check(err, check.Equals, ErrPayLoadTooShort)
+	// These payloads do not have a the FIPS version prefix, so they will
+	// generate a different error in FIPS mode.
+	if !FIPSMode {
+		_, err = key.Decrypt("ycKfTfYlVaOnsypb")
+		c.Check(err, check.Equals, ErrPayLoadTooShort)
 
-	// A payload encrypted with some other key should always fail.
-	_, err = key.Decrypt("xzWzNpN3o5cMv9WYeHQSGt9ZPMrV5UzONRHDuM2v4gXp4/Q2BH5jugWZDmuHJdUVkrY8")
-	c.Check(err, check.Equals, ErrFailedToDecrypt)
+		// A payload encrypted with some other key should always fail.
+		_, err = key.Decrypt("xzWzNpN3o5cMv9WYeHQSGt9ZPMrV5UzONRHDuM2v4gXp4/Q2BH5jugWZDmuHJdUVkrY8")
+		c.Check(err, check.Equals, ErrFailedToDecrypt)
+	}
 
 	// Roundtrip encryption test.
 	cipher, err := key.Encrypt("some secret")
@@ -149,6 +153,9 @@ func (s *KeySuite) TestEncryption(c *check.C) {
 }
 
 func (s *KeySuite) TestVersionedEncryption(c *check.C) {
+	if FIPSMode {
+		c.ExpectFailure("NaCl encryption will not work under FIPS")
+	}
 	key, _ := NewKey()
 
 	// Too short to have a version prefix.
@@ -199,6 +206,41 @@ func (s *KeySuite) TestByteEncryption(c *check.C) {
 	out, err := key.DecryptBytes(cipher)
 	c.Check(err, check.IsNil)
 	c.Check(out, check.DeepEquals, bytes)
+}
+
+func (s *KeySuite) TestFIPSEncryption(c *check.C) {
+	key, _ := NewKey()
+
+	_, err := key.Decrypt("AnZYqAlPrCtkD7qOPUY3TbUD5HBqdIx6YZJt")
+	c.Check(err, check.Equals, ErrPayLoadTooShort)
+
+	// A payload encrypted with some other key but with a valid FIPS version
+	// prefix.
+	_, err = key.Decrypt("AnZYqAlPrCtkD7qOPUY3TbUD5HBqdIx6YZJtPomguh8IHJMmPtjuew==")
+	c.Check(err, check.Equals, ErrFailedToDecrypt)
+
+	// Roundtrip encryption test.
+	cipher, err := key.EncryptFIPS("some secret")
+	c.Check(err, check.IsNil)
+	c.Check(cipher, check.Not(check.Equals), "some secret") // Just checking.
+	text, err := key.Decrypt(cipher)
+	c.Check(err, check.IsNil)
+	c.Check(text, check.Equals, "some secret")
+
+	// Check that nonces actually work.
+	dupCipher, err := key.EncryptFIPS("some secret")
+	c.Check(err, check.IsNil)
+	c.Check(dupCipher, check.Not(check.Equals), cipher)
+
+	// Swap out the standard library's crypto reader for the remainder of
+	// the tests so we can simulate a failure to generate random bits.
+	randReader := rand.Reader
+	rand.Reader = &errReader{}
+	defer func() { rand.Reader = randReader }()
+
+	_, err = key.EncryptFIPS("some secret")
+	c.Check(err, check.Not(check.IsNil))
+	c.Check(err, check.ErrorMatches, `cannot read`)
 }
 
 func Test(t *testing.T) {
