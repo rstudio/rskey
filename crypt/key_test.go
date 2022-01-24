@@ -129,6 +129,11 @@ func (s *KeySuite) TestEncryption(c *check.C) {
 	text, err := key.Decrypt(cipher)
 	c.Check(text, check.Equals, "some secret")
 
+	// Check that nonces actually work.
+	dupCipher, err := key.Encrypt("some secret")
+	c.Check(err, check.IsNil)
+	c.Check(dupCipher, check.Not(check.Equals), cipher)
+
 	// Swap out the standard library's crypto reader for the remainder of
 	// the tests so we can simulate a failure to generate random bits.
 	randReader := rand.Reader
