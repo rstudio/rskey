@@ -33,11 +33,17 @@ $ rskey generate > /var/lib/rstudio-pm/rstudio-pm.key
 $ rskey generate -o /var/lib/rstudio-pm/rstudio-pm.key
 ```
 
-You can then encrypt data (such as database passwords) supplied via standard
-output with `rskey encrypt`. For example:
+You can then encrypt data (such as database passwords) interactively with `rskey
+encrypt`. For example:
 
 ``` shell
-$ echo "mypassword" | rskey encrypt -f /var/lib/rstudio-pm/rstudio-pm.key
+$ rskey encrypt -f /var/lib/rstudio-pm/rstudio-pm.key
+```
+
+Line-separated entries can also be passed on standard input:
+
+``` shell
+$ cat passwords.txt | rskey encrypt -f /var/lib/rstudio-pm/rstudio-pm.key
 ```
 
 ## Details
