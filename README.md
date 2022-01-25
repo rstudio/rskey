@@ -23,14 +23,20 @@ No local license keys are required, either.
 Binary releases for Windows, macOS, and Linux are available [on
 GitHub](https://github.com/rstudio/rskey/releases).
 
+If you have a local Go toolchain you can also install via `go install`:
+
+``` shell
+$ go install github.com/rstudio/rskey@latest
+```
+
 ## Usage
 
 You can generate keys with `rskey generate`. For example:
 
 ``` shell
-$ rskey generate > /var/lib/rstudio-pm/rstudio-pm.key
-# Or, equivalently:
 $ rskey generate -o /var/lib/rstudio-pm/rstudio-pm.key
+# Or, to simply echo the key to standard input:
+$ rskey generate
 ```
 
 You can then encrypt data (such as database passwords) interactively with `rskey
@@ -46,6 +52,8 @@ Line-separated entries can also be passed on standard input:
 $ cat passwords.txt | rskey encrypt -f /var/lib/rstudio-pm/rstudio-pm.key
 ```
 
+An `rskey decrypt` command is also provided.
+
 ## Details
 
 * Encryption uses the well-known [NaCl Secretbox
@@ -54,17 +62,7 @@ $ cat passwords.txt | rskey encrypt -f /var/lib/rstudio-pm/rstudio-pm.key
   can decrypt any data encrypted with it.
 
 * Key files are a sequence of 512 hex-encoded, securely-generated random bytes.
-  This means that
-
-``` shell
-$ rskey generate
-```
-
-  is equivalent to
-
-``` shell
-$ openssl rand -hex 512
-```
+  This means that `rskey generate` is analogous to `openssl rand -hex 512`.
 
 ## API Stability and Versioning
 
@@ -72,4 +70,4 @@ $ openssl rand -hex 512
 
 ## License
 
-TBD
+Licensed under the Apache License, Version 2.0. See `LICENSE` for details.
