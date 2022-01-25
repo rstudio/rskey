@@ -15,3 +15,5 @@ archives:
   - LICENSE
   - README.md
   - NOTICE.md
+release:
+  draft: true
