@@ -104,16 +104,34 @@ func (k *Key) base64String() string {
 // Encrypt produces base64-encoded cipher text for the given payload and key, or
 // an error if one cannot be created.
 func (k *Key) Encrypt(s string) (string, error) {
-	var nonce [24]byte
-	_, err := rand.Read(nonce[:])
+	output, err := k.encryptSecretbox(s)
 	if err != nil {
 		return "", err
 	}
+	return base64.StdEncoding.EncodeToString(output), nil
+}
 
+// encryptVersioned produces a base64-encoded cipher text with an embedded
+// version for the given payload and key, or an error if one cannot be created.
+// This emulates the format used by some implementations.
+func (k *Key) encryptVersioned(s string) (string, error) {
+	output, err := k.encryptSecretbox(s)
+	if err != nil {
+		return "", err
+	}
+	output = append([]byte{1}, output...)
+	return base64.StdEncoding.EncodeToString(output), nil
+}
+
+func (k *Key) encryptSecretbox(s string) ([]byte, error) {
+	var nonce [24]byte
+	_, err := rand.Read(nonce[:])
+	if err != nil {
+		return []byte{}, err
+	}
 	output := secretbox.Seal(nil, []byte(s), &nonce, k.key32())
 	output = append(nonce[:], output...)
-
-	return base64.StdEncoding.EncodeToString(output), nil
+	return output, nil
 }
 
 // Decrypt takes base64-encoded cipher text encrypted with the given key and
@@ -123,6 +141,24 @@ func (k *Key) Decrypt(s string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("invalid decryption payload: %v", err)
 	}
+	if len(buf) < 1 {
+		return "", ErrPayLoadTooShort
+	}
+	// Some implementations use a version-prefixed cipher text. In order to
+	// handle the (unlikely but possible) case where a versionless payload
+	// *just happens* to start with a valid version byte, we must also try
+	// the fallback on error.
+	switch buf[0] {
+	case byte(1):
+		str, err := k.decryptSecretbox(buf[1:])
+		if err == nil {
+			return str, err
+		}
+	}
+	return k.decryptSecretbox(buf)
+}
+
+func (k *Key) decryptSecretbox(buf []byte) (string, error) {
 	if len(buf) < minimumSecretboxLength {
 		return "", ErrPayLoadTooShort
 	}
