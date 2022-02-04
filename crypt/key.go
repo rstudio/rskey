@@ -21,13 +21,15 @@ const (
 	KeyLength = 512
 	// The length of unpadded base64, the shortest supported encoding.
 	minEncodedLength = KeyLength * 6 / 8
+	// The overhead length plus the nonce length.
+	minimumSecretboxLength = secretbox.Overhead + 24
 )
 
 var (
 	// ErrInvalidKeyLength reports a malformed Key input.
 	ErrInvalidKeyLength = errors.New("Encryption keys must be 512 bytes when decoded")
 	// ErrPayLoadTooShort reports malformed cipher text.
-	ErrPayLoadTooShort = errors.New(fmt.Sprintf("Encrypted payloads must be at least %d bytes", 24+secretbox.Overhead))
+	ErrPayLoadTooShort = errors.New(fmt.Sprintf("Encrypted payloads must be at least %d bytes", minimumSecretboxLength))
 	// ErrFailedToDecrypt reports a failure to decrypt a given cipher text with a
 	// given Key via Decrypt().
 	ErrFailedToDecrypt = errors.New("Decryption failed")
@@ -121,7 +123,7 @@ func (k *Key) Decrypt(s string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("invalid decryption payload: %v", err)
 	}
-	if len(buf) < 24+secretbox.Overhead {
+	if len(buf) < minimumSecretboxLength {
 		return "", ErrPayLoadTooShort
 	}
 
