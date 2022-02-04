@@ -148,6 +148,41 @@ func (s *KeySuite) TestEncryption(c *check.C) {
 	c.Check(err, check.ErrorMatches, `cannot read`)
 }
 
+func (s *KeySuite) TestVersionedEncryption(c *check.C) {
+	key, _ := NewKey()
+
+	// Too short to have a version prefix.
+	_, err := key.Decrypt("")
+	c.Check(err, check.Equals, ErrPayLoadTooShort)
+
+	// A payload encrypted with some other key but with a valid version.
+	_, err = key.Decrypt("ASnl7KSpgnkA+jyYy2IErhgFL54O2qGvIbYxyoa/to+C1EgeFl/90GXEm15PZPApoOSf8A==")
+	c.Check(err, check.Equals, ErrFailedToDecrypt)
+
+	// Roundtrip encryption test.
+	cipher, err := key.encryptVersioned("some secret")
+	c.Check(err, check.IsNil)
+	c.Check(cipher, check.Not(check.Equals), "some secret") // Just checking.
+	text, err := key.Decrypt(cipher)
+	c.Check(err, check.IsNil)
+	c.Check(text, check.Equals, "some secret")
+
+	// Check that nonces actually work.
+	dupCipher, err := key.encryptVersioned("some secret")
+	c.Check(err, check.IsNil)
+	c.Check(dupCipher, check.Not(check.Equals), cipher)
+
+	// Swap out the standard library's crypto reader for the remainder of
+	// the tests so we can simulate a failure to generate random bits.
+	randReader := rand.Reader
+	rand.Reader = &errReader{}
+	defer func() { rand.Reader = randReader }()
+
+	_, err = key.encryptVersioned("some secret")
+	c.Check(err, check.Not(check.IsNil))
+	c.Check(err, check.ErrorMatches, `cannot read`)
+}
+
 func Test(t *testing.T) {
 	_ = check.Suite(&KeySuite{})
 	check.TestingT(t)
