@@ -183,6 +183,24 @@ func (s *KeySuite) TestVersionedEncryption(c *check.C) {
 	c.Check(err, check.ErrorMatches, `cannot read`)
 }
 
+func (s *KeySuite) TestByteEncryption(c *check.C) {
+	key, _ := NewKey()
+
+	// Not everything you might want to encrypt is a valid UTF-8 string.
+	bytes := []byte{
+		0x80, 0x3a, 0x42, 0x5e, 0xef, 0x19, 0x11, 0xdd, 0x39, 0x46,
+		0x81, 0x14, 0x19, 0xdc, 0xe7, 0x3e, 0xc9, 0x0c, 0xfe, 0x5b,
+		0xe5, 0x92, 0x0c, 0xa0, 0xcf, 0xa1, 0xf7, 0x13, 0xd8, 0x7a,
+	}
+
+	// Roundtrip encryption test.
+	cipher, err := key.EncryptBytes(bytes)
+	c.Check(err, check.IsNil)
+	out, err := key.DecryptBytes(cipher)
+	c.Check(err, check.IsNil)
+	c.Check(out, check.DeepEquals, bytes)
+}
+
 func Test(t *testing.T) {
 	_ = check.Suite(&KeySuite{})
 	check.TestingT(t)

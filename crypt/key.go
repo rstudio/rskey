@@ -100,7 +100,13 @@ func (k *Key) base64String() string {
 // Encrypt produces base64-encoded cipher text for the given payload and key, or
 // an error if one cannot be created.
 func (k *Key) Encrypt(s string) (string, error) {
-	output, err := k.encryptSecretbox(s)
+	return k.EncryptBytes([]byte(s))
+}
+
+// EncryptBytes produces base64-encoded cipher text for the given bytes and key,
+// or an error if one cannot be created.
+func (k *Key) EncryptBytes(bytes []byte) (string, error) {
+	output, err := k.encryptSecretbox(bytes)
 	if err != nil {
 		return "", err
 	}
@@ -111,7 +117,7 @@ func (k *Key) Encrypt(s string) (string, error) {
 // version for the given payload and key, or an error if one cannot be created.
 // This emulates the format used by some implementations.
 func (k *Key) encryptVersioned(s string) (string, error) {
-	output, err := k.encryptSecretbox(s)
+	output, err := k.encryptSecretbox([]byte(s))
 	if err != nil {
 		return "", err
 	}
@@ -122,12 +128,19 @@ func (k *Key) encryptVersioned(s string) (string, error) {
 // Decrypt takes base64-encoded cipher text encrypted with the given key and
 // returns the original clear text, or an error.
 func (k *Key) Decrypt(s string) (string, error) {
+	bytes, err := k.DecryptBytes(s)
+	return string(bytes), err
+}
+
+// DecryptBytes takes base64-encoded cipher text encrypted with the given key
+// and returns the original bytes, or an error.
+func (k *Key) DecryptBytes(s string) ([]byte, error) {
 	buf, err := base64.StdEncoding.DecodeString(s)
 	if err != nil {
-		return "", fmt.Errorf("invalid decryption payload: %v", err)
+		return []byte{}, fmt.Errorf("invalid decryption payload: %v", err)
 	}
 	if len(buf) < 1 {
-		return "", ErrPayLoadTooShort
+		return []byte{}, ErrPayLoadTooShort
 	}
 	// Some implementations use a version-prefixed cipher text. In order to
 	// handle the (unlikely but possible) case where a versionless payload
