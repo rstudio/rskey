@@ -14,20 +14,20 @@ const (
 	minimumSecretboxLength = secretbox.Overhead + 24
 )
 
-func (k *Key) encryptSecretbox(s string) ([]byte, error) {
+func (k *Key) encryptSecretbox(bytes []byte) ([]byte, error) {
 	var nonce [24]byte
 	_, err := rand.Read(nonce[:])
 	if err != nil {
 		return []byte{}, err
 	}
-	output := secretbox.Seal(nil, []byte(s), &nonce, k.key32())
+	output := secretbox.Seal(nil, bytes, &nonce, k.key32())
 	output = append(nonce[:], output...)
 	return output, nil
 }
 
-func (k *Key) decryptSecretbox(buf []byte) (string, error) {
+func (k *Key) decryptSecretbox(buf []byte) ([]byte, error) {
 	if len(buf) < minimumSecretboxLength {
-		return "", ErrPayLoadTooShort
+		return []byte{}, ErrPayLoadTooShort
 	}
 
 	var nonce [24]byte
@@ -35,9 +35,9 @@ func (k *Key) decryptSecretbox(buf []byte) (string, error) {
 
 	bytes, ok := secretbox.Open(nil, buf[24:], &nonce, k.key32())
 	if !ok {
-		return "", ErrFailedToDecrypt
+		return []byte{}, ErrFailedToDecrypt
 	}
-	return string(bytes[:]), nil
+	return bytes, nil
 }
 
 // NACL Secretbox only uses 32 bytes, so we pass it the *first* 32 bytes of the
