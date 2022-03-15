@@ -67,8 +67,11 @@ func runEncrypt(cmd *cobra.Command, args []string) error {
 		}
 		defer term.Restore(int(os.Stdin.Fd()), s)
 		return term.NewTerminal(os.Stdin, "").ReadPassword(
-			"Enter the sensitive data to encrypt, then Enter: ")
+			"Type the sensitive data to encrypt, then press Enter: ")
 	}()
+	if err != nil {
+		return err
+	}
 	cipher, err := key.Encrypt(data)
 	if err != nil {
 		return err
