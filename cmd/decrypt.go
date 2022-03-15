@@ -55,7 +55,10 @@ func runDecrypt(cmd *cobra.Command, args []string) error {
 			if err != nil {
 				return err
 			}
-			fmt.Fprintf(cmd.OutOrStdout(), "%s\n", cipher)
+			_, err = fmt.Fprintf(cmd.OutOrStdout(), "%s\n", cipher)
+			if err != nil {
+				return err
+			}
 		}
 		return nil
 	}
@@ -79,8 +82,8 @@ func runDecrypt(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Fprintf(cmd.OutOrStdout(), "%s\n", cipher)
-	return nil
+	_, err = fmt.Fprintf(cmd.OutOrStdout(), "%s\n", cipher)
+	return err
 }
 
 func init() {
