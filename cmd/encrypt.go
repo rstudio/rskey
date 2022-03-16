@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 
@@ -87,8 +88,23 @@ func runEncrypt(cmd *cobra.Command, args []string) error {
 			return "", err
 		}
 		defer term.Restore(int(os.Stdin.Fd()), s)
-		return term.NewTerminal(os.Stdin, "").ReadPassword(
+		terminal := term.NewTerminal(os.Stdin, "")
+		pass1, err := terminal.ReadPassword(
 			"Type the sensitive data to encrypt, then press Enter: ")
+		if err != nil {
+			return "", err
+		}
+		pass2, err := terminal.ReadPassword(
+			"Type the sensitive data again: ")
+		if err != nil {
+			return "", err
+		}
+
+		// Check to be sure that sensitive data entry was the same twice.
+		if pass1 != pass2 {
+			return "", errors.New("the two entries do not match")
+		}
+		return pass1, nil
 	}()
 	if err != nil {
 		return err
