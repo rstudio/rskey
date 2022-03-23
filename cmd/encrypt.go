@@ -12,6 +12,7 @@ import (
 	"golang.org/x/term"
 
 	"github.com/rstudio/rskey/crypt"
+	"github.com/rstudio/rskey/workbench"
 )
 
 var encryptCmd = &cobra.Command{
@@ -37,9 +38,20 @@ func runEncrypt(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	defer f.Close()
-	key, err := crypt.NewKeyFromReader(f)
-	if err != nil {
-		return err
+	var encrypt func(string) (string, error)
+	switch cmd.Flag("mode").Value.String() {
+	case "workbench":
+		key, err := workbench.NewKeyFromReader(f)
+		if err != nil {
+			return err
+		}
+		encrypt = key.Encrypt
+	default:
+		key, err := crypt.NewKeyFromReader(f)
+		if err != nil {
+			return err
+		}
+		encrypt = key.Encrypt
 	}
 	// Check if there's actually data in standard input.
 	info, err := os.Stdin.Stat()
@@ -50,7 +62,7 @@ func runEncrypt(cmd *cobra.Command, args []string) error {
 	if info.Mode()&os.ModeNamedPipe != 0 {
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
-			cipher, err := key.Encrypt(scanner.Text())
+			cipher, err := encrypt(scanner.Text())
 			if err != nil {
 				return err
 			}
@@ -75,7 +87,7 @@ func runEncrypt(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	cipher, err := key.Encrypt(data)
+	cipher, err := encrypt(data)
 	if err != nil {
 		return err
 	}
@@ -86,4 +98,6 @@ func runEncrypt(cmd *cobra.Command, args []string) error {
 func init() {
 	rootCmd.AddCommand(encryptCmd)
 	encryptCmd.Flags().StringP("keyfile", "f", "", "Use the given key file")
+	encryptCmd.Flags().StringP("mode", "", "default",
+		`One of "default" or "workbench"`)
 }

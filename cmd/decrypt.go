@@ -12,6 +12,7 @@ import (
 	"golang.org/x/term"
 
 	"github.com/rstudio/rskey/crypt"
+	"github.com/rstudio/rskey/workbench"
 )
 
 // decryptCmd represents the decrypt command
@@ -38,9 +39,20 @@ func runDecrypt(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	defer f.Close()
-	key, err := crypt.NewKeyFromReader(f)
-	if err != nil {
-		return err
+	var decrypt func(string) (string, error)
+	switch cmd.Flag("mode").Value.String() {
+	case "workbench":
+		key, err := workbench.NewKeyFromReader(f)
+		if err != nil {
+			return err
+		}
+		decrypt = key.Decrypt
+	default:
+		key, err := crypt.NewKeyFromReader(f)
+		if err != nil {
+			return err
+		}
+		decrypt = key.Decrypt
 	}
 	// Check if there's actually data in standard input.
 	info, err := os.Stdin.Stat()
@@ -51,7 +63,7 @@ func runDecrypt(cmd *cobra.Command, args []string) error {
 	if info.Mode()&os.ModeNamedPipe != 0 {
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
-			cipher, err := key.Decrypt(scanner.Text())
+			cipher, err := decrypt(scanner.Text())
 			if err != nil {
 				return err
 			}
@@ -78,7 +90,7 @@ func runDecrypt(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	cipher, err := key.Decrypt(data)
+	cipher, err := decrypt(data)
 	if err != nil {
 		return err
 	}
@@ -89,4 +101,6 @@ func runDecrypt(cmd *cobra.Command, args []string) error {
 func init() {
 	rootCmd.AddCommand(decryptCmd)
 	decryptCmd.Flags().StringP("keyfile", "f", "", "Use the given key file")
+	decryptCmd.Flags().StringP("mode", "", "default",
+		`One of "default" or "workbench"`)
 }
