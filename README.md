@@ -34,6 +34,20 @@ If you have a local Go toolchain you can also install via `go install`:
 $ go install github.com/rstudio/rskey@latest
 ```
 
+Binary releases are signed with [Sigstore](https://www.sigstore.dev/). You can
+verify these signatures with their `cosign` tool, for example:
+
+``` shell
+$ COSIGN_EXPERIMENTAL=1 cosign verify-blob \
+  --signature rskey_0.5.0_linux_amd64.tar.gz.sig \
+  rskey_0.5.0_linux_amd64.tar.gz
+```
+
+We use Cosign's ["keyless"](https://docs.sigstore.dev/cosign/openid_signing)
+mode, which uses the OpenID Connect tokens issued by GitHub for this repository
+and ephemeral certificates instead of private keys. This feature currently
+requires setting `COSIGN_EXPERIMENTAL=1`.
+
 ## Usage
 
 You can generate keys with `rskey generate`. For example:
