@@ -46,6 +46,12 @@ func runEncrypt(cmd *cobra.Command, args []string) error {
 			return err
 		}
 		encrypt = key.Encrypt
+	case "fips":
+		key, err := crypt.NewKeyFromReader(f)
+		if err != nil {
+			return err
+		}
+		encrypt = key.EncryptFIPS
 	default:
 		key, err := crypt.NewKeyFromReader(f)
 		if err != nil {
@@ -99,5 +105,5 @@ func init() {
 	rootCmd.AddCommand(encryptCmd)
 	encryptCmd.Flags().StringP("keyfile", "f", "", "Use the given key file")
 	encryptCmd.Flags().StringP("mode", "", "default",
-		`One of "default" or "workbench"`)
+		`One of "default", "fips", or "workbench"`)
 }
