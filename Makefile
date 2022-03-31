@@ -7,7 +7,7 @@ GO_BUILD_ARGS = -v -tags "netgo"
 
 GOPATH = `go env GOPATH`
 ADDLICENSE = $(GOPATH)/bin/addlicense
-ADDLICENSE_ARGS = -v -s=only -l=apache -c "RStudio, PBC" -ignore 'coverage.html' -ignore '.github/**' -ignore '.goreleaser.yaml'
+ADDLICENSE_ARGS = -v -s=only -l=apache -c "RStudio, PBC" -ignore 'coverage*' -ignore '.github/**' -ignore '.goreleaser.yaml'
 
 all: rskey
 
