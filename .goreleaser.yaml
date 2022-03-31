@@ -12,6 +12,7 @@ builds:
   - darwin
   ldflags:
   - -s -w
+  mod_timestamp: '{{ .CommitTimestamp }}'
   tags:
   - netgo
 archives:
