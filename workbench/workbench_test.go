@@ -77,8 +77,8 @@ func (s *WorkbenchSuite) TestEncryption(c *check.C) {
 	_, err = k.Decrypt("BFA25145xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxBFA25145")
 	c.Check(err, check.ErrorMatches, `failed to decode secret.+`)
 
-	// Truncated but still valid base64.
-	_, err = k.Decrypt("BFA25145OoPWwVZMdN/K7eDJUD5gLg916yildo6m+XG0+Sld7r+SuKXS3Rsi/TC0qbVZ5uCMuCMBFA25145")
+	// Too short but still valid base64.
+	_, err = k.Decrypt("BFA25145D75Xreg+vkkVgaFW3GOQvwzKHXUI5pOX4+2yJ5ZNJqZz7h4WEOxbeovH3GINg1E=BFA25145")
 	c.Check(err, check.ErrorMatches, `Payload is too short to be encrypted`)
 
 	// Roundtrip encryption test.
