@@ -19,9 +19,14 @@ jobs:
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
+    - name: Install development dependencies
+      run: |
+        go install github.com/google/addlicense@latest
     - name: Build
       run: make
     - name: Test
       run: make test
     - name: Check
       run: make check
+    - name: Check Licenses
+      run: make check-license
