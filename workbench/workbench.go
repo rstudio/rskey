@@ -89,7 +89,7 @@ func (k *Key) Encrypt(s string) (string, error) {
 	mode.CryptBlocks(out, out)
 	// The actual encrypted payload is AES-128-CBC with the IV as a prefix,
 	// base64-encoded.
-	encoded := base64.RawStdEncoding.EncodeToString(append(iv, out...))
+	encoded := base64.StdEncoding.EncodeToString(append(iv, out...))
 	return k.hash + encoded + k.hash, nil
 }
 
@@ -107,7 +107,7 @@ func (k *Key) Decrypt(s string) (string, error) {
 	if s[:8] != k.hash {
 		return "", crypt.ErrFailedToDecrypt
 	}
-	buf, err := base64.RawStdEncoding.DecodeString(s[8 : len(s)-8])
+	buf, err := base64.StdEncoding.DecodeString(s[8 : len(s)-8])
 	if err != nil {
 		return "", fmt.Errorf("failed to decode secret: %v", err)
 	}
