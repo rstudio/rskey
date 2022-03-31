@@ -27,3 +27,5 @@ signs:
   signature: "${artifact}.sig"
   args: ["sign-blob", "--output=${signature}", "${artifact}"]
   artifacts: all
+source:
+  enabled: true
