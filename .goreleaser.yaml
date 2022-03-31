@@ -22,3 +22,8 @@ archives:
   - NOTICE.md
 release:
   draft: true
+signs:
+- cmd: cosign
+  signature: "${artifact}.sig"
+  args: ["sign-blob", "--output=${signature}", "${artifact}"]
+  artifacts: all
