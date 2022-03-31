@@ -17,3 +17,5 @@ jobs:
       run: make test
     - name: Check
       run: make check
+    - name: Check Licenses
+      run: make check-license
