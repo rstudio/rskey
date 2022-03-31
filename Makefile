@@ -3,7 +3,7 @@ CGO_ENABLED = 0
 GO_LDFLAGS = -s -w
 # Using the 'netgo' tag opts into the native implementation and allows for
 # static binaries.
-GO_BUILD_ARGS = -v -tags "netgo"
+GO_BUILD_ARGS = -v -tags "netgo" -trimpath
 
 GOPATH = `go env GOPATH`
 ADDLICENSE = $(GOPATH)/bin/addlicense
