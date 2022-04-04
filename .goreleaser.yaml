@@ -24,6 +24,10 @@ archives:
   format_overrides:
   - goos: windows
     format: zip
+blobs:
+- provider: s3
+  bucket: rstudio-platform-public-artifacts
+  folder: "rskey/{{ .Version }}"
 release:
   draft: true
   header: |
