@@ -47,6 +47,10 @@ archives:
   - README.md
   - NOTICE.md
   name_template: "{{ .ProjectName }}-fips_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+blobs:
+- provider: s3
+  bucket: rstudio-platform-public-artifacts
+  folder: "rskey/{{ .Version }}"
 release:
   draft: true
 signs:

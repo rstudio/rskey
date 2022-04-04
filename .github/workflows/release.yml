@@ -24,6 +24,11 @@ jobs:
       uses: sigstore/cosign-installer@main
       with:
         cosign-release: 'v1.6.0'
+    - uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        role-session-name: gha-rskey
+        aws-region: us-east-1
     - uses: actions/cache@v3
       id: goboring-cache
       with:
