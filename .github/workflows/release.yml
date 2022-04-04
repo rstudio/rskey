@@ -24,6 +24,21 @@ jobs:
       uses: sigstore/cosign-installer@main
       with:
         cosign-release: 'v1.6.0'
+    - uses: actions/cache@v3
+      id: goboring-cache
+      with:
+        path: /opt/goboring/
+        key: ${{ runner.os }}-goboring-${{ hashFiles('/opt/goboring/go/VERSION') }}
+        restore-keys: |
+          ${{ runner.os }}-goboring-
+    - name: Set up GoBoring
+      if: steps.goboring-cache.outputs.cache-hit != 'true'
+      run: |
+        mkdir -p /opt/goboring
+        cd /opt/goboring
+        wget --no-verbose https://go-boringcrypto.storage.googleapis.com/go1.18b7.linux-amd64.tar.gz
+        tar -xzvf go1.18b7.linux-amd64.tar.gz
+        /opt/goboring/go/bin/go version
     - name: Run GoReleaser
       uses: goreleaser/goreleaser-action@v2
       with:

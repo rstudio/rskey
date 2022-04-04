@@ -16,11 +16,37 @@ builds:
   mod_timestamp: '{{ .CommitTimestamp }}'
   tags:
   - netgo
+- id: fips
+  binary: rskey-fips
+  env:
+  - CGO_ENABLED=1
+  - GOROOT=/opt/goboring/go
+  flags:
+  - -trimpath
+  gobinary: /opt/goboring/go/bin/go
+  ldflags:
+  - -s -w -linkmode=external -extldflags=-static
+  mod_timestamp: "{{ .CommitTimestamp }}"
+  tags:
+  - fips
+  - netgo
+  targets:
+  - linux_amd64
 archives:
-- files:
+- builds:
+  - rskey
+  files:
   - LICENSE
   - README.md
   - NOTICE.md
+- id: fips
+  builds:
+  - fips
+  files:
+  - LICENSE
+  - README.md
+  - NOTICE.md
+  name_template: "{{ .ProjectName }}-fips_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 release:
   draft: true
 signs:
