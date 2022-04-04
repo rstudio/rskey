@@ -16,7 +16,10 @@ builds:
   mod_timestamp: '{{ .CommitTimestamp }}'
   tags:
   - netgo
+  targets:
+  - linux_amd64
 - id: fips
+  skip: true
   binary: rskey-fips
   env:
   - CGO_ENABLED=1
