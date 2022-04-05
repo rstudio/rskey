@@ -21,6 +21,9 @@ archives:
   - LICENSE
   - README.md
   - NOTICE.md
+  format_overrides:
+  - goos: windows
+    format: zip
 release:
   draft: true
 signs:
