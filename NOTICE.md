@@ -7,18 +7,19 @@ those components and includes a full copy of their licenses.
 
 * github.com/spf13/cobra
 * golang.org/x/crypto
+* golang.org/x/term
 * gopkg.in/check.v1
 
 ## Licenses
 
 ### github.com/spf13/cobra
 
-Version: v1.3.0
-Time: 2021-12-14T18:22:51Z
+Version: v1.4.0
+Time: 2022-03-10T15:19:35Z
 Licence: Apache-2.0
 
 ```
-Contents of probable licence file $GOMODCACHE/github.com/spf13/cobra@v1.3.0/LICENSE.txt:
+Contents of probable licence file $GOMODCACHE/github.com/spf13/cobra@v1.4.0/LICENSE.txt:
 
                                 Apache License
                            Version 2.0, January 2004
@@ -198,12 +199,50 @@ Contents of probable licence file $GOMODCACHE/github.com/spf13/cobra@v1.3.0/LICE
 
 ### golang.org/x/crypto
 
-Version: v0.0.0-20211215153901-e495a2d5b3d3
-Time: 2021-12-15T15:39:01Z
+Version: v0.0.0-20220112180741-5e0467b6c7ce
+Time: 2022-01-12T18:07:41Z
 Licence: BSD-3-Clause
 
 ```
-Contents of probable licence file $GOMODCACHE/golang.org/x/crypto@v0.0.0-20211215153901-e495a2d5b3d3/LICENSE:
+Contents of probable licence file $GOMODCACHE/golang.org/x/crypto@v0.0.0-20220112180741-5e0467b6c7ce/LICENSE:
+
+Copyright (c) 2009 The Go Authors. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+   * Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+   * Redistributions in binary form must reproduce the above
+copyright notice, this list of conditions and the following disclaimer
+in the documentation and/or other materials provided with the
+distribution.
+   * Neither the name of Google Inc. nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+```
+
+### golang.org/x/term
+
+Version: v0.0.0-20210927222741-03fcf44c2211
+Time: 2021-09-27T22:27:41Z
+Licence: BSD-3-Clause
+
+```
+Contents of probable licence file $GOMODCACHE/golang.org/x/term@v0.0.0-20210927222741-03fcf44c2211/LICENSE:
 
 Copyright (c) 2009 The Go Authors. All rights reserved.
 
