@@ -26,6 +26,22 @@ archives:
     format: zip
 release:
   draft: true
+  header: |
+    `rskey` is a command-line tool (and bundled Go packages) that generates secret keys interoperable with the format used by RStudio's Workbench, Connect, and Package Manager products.
+
+    ## Changes since v{{ .Version }}
+  footer: |
+    ## Binary signatures
+
+    Binary releases are signed with [Sigstore](https://www.sigstore.dev/). You can verify these signatures with their `cosign` tool, for example:
+
+    ``` shell
+    $ COSIGN_EXPERIMENTAL=1 cosign verify-blob \
+      --signature rskey_{{ .Version }}_linux_amd64.tar.gz.sig \
+      rskey_{{ .Version }}_linux_amd64.tar.gz
+    ```
+
+    We use Cosign's ["keyless"](https://docs.sigstore.dev/cosign/openid_signing) mode, which uses the OpenID Connect tokens issued by GitHub for this repository and ephemeral certificates instead of private keys. This feature currently requires setting `COSIGN_EXPERIMENTAL=1`.
 signs:
 - cmd: cosign
   signature: "${artifact}.sig"
