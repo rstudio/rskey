@@ -179,3 +179,7 @@ func rotate(data []byte) []byte {
 	}
 	return newData
 }
+
+func (k *Key) Bytes() []byte {
+	return k[:]
+}
