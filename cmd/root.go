@@ -9,9 +9,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	Version = "???"
+)
+
 var rootCmd = &cobra.Command{
-	Use:   "rskey",
-	Short: "Manage keys and secrets for RStudio Connect and Package Manager",
+	Use:     "rskey",
+	Short:   "Manage keys and secrets for RStudio Connect and Package Manager",
+	Version: Version,
 }
 
 // Execute runs the rskey command. On error it will call os.Exit.
