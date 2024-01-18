@@ -1,11 +1,13 @@
+VERSION := $(shell git describe --always --dirty --tags)
+
 CGO_ENABLED = 0
 # Strip binaries by default to make them smaller.
-GO_LDFLAGS = -s -w
+GO_LDFLAGS = -s -w -X github.com/rstudio/rskey/cmd.Version=$(VERSION)
 # Using the 'netgo' tag opts into the native implementation and allows for
 # static binaries.
 GO_BUILD_ARGS = -v -tags "netgo" -trimpath
 
-GOPATH = `go env GOPATH`
+GOPATH = $(shell go env GOPATH)
 ADDLICENSE = $(GOPATH)/bin/addlicense
 ADDLICENSE_ARGS = -v -s=only -l=apache -c "RStudio, PBC" -ignore 'coverage*' -ignore '.github/**' -ignore '.goreleaser.yaml'
 NOTICETOOL = $(GOPATH)/bin/go-licence-detector
