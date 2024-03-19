@@ -27,7 +27,7 @@ archives:
 blobs:
 - provider: s3
   bucket: rstudio-platform-public-artifacts
-  folder: "rskey/{{ .Version }}"
+  folder: "platform/rskey/{{ .Version }}"
 release:
   draft: true
   header: |
