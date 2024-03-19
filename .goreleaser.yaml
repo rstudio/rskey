@@ -49,7 +49,7 @@ release:
 signs:
 - cmd: cosign
   signature: "${artifact}.sig"
-  args: ["sign-blob", "--output=${signature}", "${artifact}"]
+  args: ["sign-blob", "--output-signature=${signature}", "${artifact}", "--yes"]
   artifacts: all
 source:
   enabled: true
