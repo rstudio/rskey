@@ -7,6 +7,7 @@ package crypt
 
 import (
 	"crypto/rand"
+	"crypto/sha1"
 	"encoding/base64"
 	"encoding/hex"
 	"errors"
@@ -168,6 +169,15 @@ func (k *Key) DecryptBytes(s string) ([]byte, error) {
 		}
 	}
 	return k.decryptSecretbox(buf)
+}
+
+// Fingerprint returns a string that can be used to identify this key.
+//
+// The fingerprint is not appropriate for cryptographic use. It is used as a
+// convenient identifier in logs and API responses to aid in key rotation.
+func (k *Key) Fingerprint() string {
+	// note: the fingerprint is a hash of the rotated, not original, key data
+	return fmt.Sprintf("%x", sha1.Sum(k[:]))
 }
 
 func rotate(data []byte) []byte {

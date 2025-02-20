@@ -13,7 +13,8 @@ import (
 )
 
 const (
-	sampleKey = "d3161166-e89b-4158-af3b-5980e3056cc6\n"
+	sampleKey  = "d3161166-e89b-4158-af3b-5980e3056cc6\n"
+	sampleHash = "BFA25145"
 )
 
 // An io.Reader that always returns an error.
@@ -33,7 +34,7 @@ func (s *WorkbenchSuite) TestNewKey(c *check.C) {
 
 	k1, err := NewKeyFromBytes([]byte(sampleKey))
 	c.Check(err, check.IsNil)
-	c.Check(k1.hash, check.Equals, "BFA25145")
+	c.Check(k1.hash, check.Equals, sampleHash)
 
 	k2, err := NewKeyFromReader(strings.NewReader(sampleKey))
 	c.Check(err, check.IsNil)
@@ -116,6 +117,12 @@ func (s *WorkbenchSuite) TestEntropyFailure(c *check.C) {
 	_, err := k.Encrypt("some secret")
 	c.Check(err, check.Not(check.IsNil))
 	c.Check(err, check.ErrorMatches, `cannot read`)
+}
+
+func (s *WorkbenchSuite) TestFingerprint(c *check.C) {
+	key, err := NewKeyFromBytes([]byte(sampleKey))
+	c.Check(err, check.IsNil)
+	c.Check(key.Fingerprint(), check.Equals, sampleHash)
 }
 
 func Test(t *testing.T) {
