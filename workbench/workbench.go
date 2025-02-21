@@ -137,3 +137,12 @@ func (k *Key) Decrypt(s string) (string, error) {
 	pad := int(out[len(out)-1])
 	return string(out[:len(out)-pad]), nil
 }
+
+// Fingerprint returns a string that can be used to identify this key.
+//
+// The fingerprint is not appropriate for cryptographic use. It matches the
+// hash reported in the output of the `rstudio-server encrypt-password`
+// command.
+func (k *Key) Fingerprint() string {
+	return k.hash
+}

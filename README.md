@@ -73,6 +73,11 @@ $ cat passwords.txt | rskey encrypt -f /var/lib/rstudio-pm/rstudio-pm.key
 
 An `rskey decrypt` command is also provided.
 
+The `rskey fingerprint` command prints a short fingerprint that helps identify
+keys in log messages and other output of Posit products. The default
+fingerprint algorithm is SHA-1; for historical reasons the Workbench algorithm
+is crc32.
+
 ### FIPS Mode
 
 Connect version 2022.03.0 and later supports [an alternative encryption
