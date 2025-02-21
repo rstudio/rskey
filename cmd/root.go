@@ -1,4 +1,4 @@
-// Copyright 2022 RStudio, PBC
+// Copyright 2025 Posit Software, PBC
 // SPDX-License-Identifier: Apache-2.0
 
 package cmd
@@ -15,7 +15,7 @@ var (
 
 var rootCmd = &cobra.Command{
 	Use:     "rskey",
-	Short:   "Manage keys and secrets for RStudio Connect and Package Manager",
+	Short:   "Manage keys and secrets for Posit Connect and Package Manager",
 	Version: Version,
 }
 

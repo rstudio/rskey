@@ -31,7 +31,7 @@ blobs:
 release:
   draft: true
   header: |
-    `rskey` is a command-line tool (and bundled Go packages) that generates secret keys interoperable with the format used by RStudio's Workbench, Connect, and Package Manager products.
+    `rskey` is a command-line tool (and bundled Go packages) that generates secret keys interoperable with the format used by Posit's Workbench, Connect, and Package Manager products.
 
     ## Changes since v{{ .Version }}
   footer: |

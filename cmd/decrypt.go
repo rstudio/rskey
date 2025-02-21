@@ -1,4 +1,4 @@
-// Copyright 2022 RStudio, PBC
+// Copyright 2025 Posit Software, PBC
 // SPDX-License-Identifier: Apache-2.0
 
 package cmd
@@ -19,7 +19,7 @@ import (
 var decryptCmd = &cobra.Command{
 	Use:   "decrypt",
 	Short: "Decrypt previously-decrypted data",
-	Long: `Use a RStudio Connect/Package Manager key to decrypt data passed on
+	Long: `Use a Posit Connect/Package Manager key to decrypt data passed on
 standard input.
 
 Examples:
