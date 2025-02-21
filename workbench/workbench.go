@@ -72,9 +72,9 @@ func (k *Key) Encrypt(s string) (string, error) {
 	// incorrect for this algorithm, but works with OpenSSL. We generate
 	// only 16 bytes but match the length for use as a prefix later.
 	iv := make([]byte, 32)
-	if _, err := rand.Read(iv[:16]); err != nil {
-		return "", err
-	}
+	// As of Go 1.24, rand.Read() aborts rather than returning an error.
+	// See: https://go.dev/issue/66821
+	_, _ = rand.Read(iv[:16])
 	// CBC requires that the input have a length divisible by the block size
 	// (which is 16) or be padded to that length using PKCS#7 padding. This
 	// padding uses the padding length itself as the padding byte, so e.g.

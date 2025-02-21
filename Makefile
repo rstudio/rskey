@@ -5,9 +5,9 @@ GO_LDFLAGS = -s -w -X github.com/rstudio/rskey/cmd.Version=$(VERSION)
 GO_BUILD_ARGS = -v -trimpath
 
 GOPATH = $(shell go env GOPATH)
-ADDLICENSE = $(GOPATH)/bin/addlicense
+ADDLICENSE = go tool github.com/google/addlicense
 ADDLICENSE_ARGS = -v -s=only -l=apache -c "Posit Software, PBC" -ignore 'coverage*' -ignore '.github/**' -ignore '.goreleaser.yaml'
-NOTICETOOL = $(GOPATH)/bin/go-licence-detector
+NOTICETOOL = go tool go.elastic.co/go-licence-detector
 
 all: rskey
 

@@ -17,34 +17,28 @@ const (
 )
 
 // EncryptFIPS produces base64-encoded cipher text for the given payload and key
-// using a FIPS-compatible algorithm, or an error if one cannot be created.
+// using a FIPS-compatible algorithm. It never returns an error.
 func (k *Key) EncryptFIPS(s string) (string, error) {
 	return k.EncryptBytesFIPS([]byte(s))
 }
 
 // EncryptBytesFIPS produces base64-encoded cipher text for the given bytes and
-// key using a FIPS-compatible algorithm, or an error if one cannot be created.
+// key using a FIPS-compatible algorithm. It never returns an error.
 func (k *Key) EncryptBytesFIPS(bytes []byte) (string, error) {
-	output, err := k.encryptAES(bytes)
-	if err != nil {
-		return "", err
-	}
-	return base64.StdEncoding.EncodeToString(output), nil
+	return base64.StdEncoding.EncodeToString(k.encryptAES(bytes)), nil
 }
 
-func (k *Key) encryptAES(bytes []byte) ([]byte, error) {
+func (k *Key) encryptAES(bytes []byte) []byte {
 	nonce := make([]byte, 12)
-	_, err := rand.Read(nonce)
-	if err != nil {
-		return []byte{}, err
-	}
-
+	// As of Go 1.24, rand.Read() aborts rather than returning an error.
+	// See: https://go.dev/issue/66821
+	_, _ = rand.Read(nonce)
 	aead := k.newAESGCM()
 	output := aead.Seal(nil, nonce, bytes, nil)
 	output = append(nonce, output...)
 	// Append a version prefix.
 	output = append([]byte{2}, output...)
-	return output, nil
+	return output
 }
 
 func (k *Key) decryptAES(buf []byte) ([]byte, error) {

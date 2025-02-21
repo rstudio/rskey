@@ -24,10 +24,9 @@ const (
 
 func (k *Key) encryptSecretbox(bytes []byte) ([]byte, error) {
 	var nonce [24]byte
-	_, err := rand.Read(nonce[:])
-	if err != nil {
-		return []byte{}, err
-	}
+	// As of Go 1.24, rand.Read() aborts rather than returning an error.
+	// See: https://go.dev/issue/66821
+	_, _ = rand.Read(nonce[:])
 	output := secretbox.Seal(nil, bytes, &nonce, k.key32())
 	output = append(nonce[:], output...)
 	return output, nil
