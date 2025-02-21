@@ -80,15 +80,18 @@ is crc32.
 
 ### FIPS Mode
 
-Connect version 2022.03.0 and later supports [an alternative encryption
-algorithm](https://docs.posit.co/connect/news/#rstudio-connect-2022.03.0),
-AES-256-GCM. This algorithm is an Approved Security Function under [Federal
-Information Processing Standard
+Connect version [2022.03.0 and
+later](https://docs.posit.co/connect/news/#rstudio-connect-2022.03.0) and
+Package Manager [version 2024.04.0 and
+later](https://docs.posit.co/rspm/news/package-manager/#posit-package-manager-2024040)
+support an alternative encryption algorithm, AES-256-GCM. This algorithm is an
+Approved Security Function under [Federal Information Processing Standard
 140](https://csrc.nist.gov/publications/detail/fips/140/3/final) (FIPS), unlike
 the default.
 
 If you prefer to encrypt secrets using this algorithm and are using this version
-of Connect or later, pass the `--mode=fips` flag to the `encrypt` command:
+or later of Connect or Package Manager, pass the `--mode=fips` flag to the
+`encrypt` command:
 
 ``` shell
 $ rskey encrypt -f connect.key --mode=fips
@@ -128,6 +131,9 @@ $ rskey encrypt --mode=workbench -f uuid.key
   Information Processing Standard
   140](https://csrc.nist.gov/publications/detail/fips/140/3/final), and can be
   used by passing `--mode=fips` to the `rskey encrypt` command.
+
+* Package Manager version 2024.04.0 and later [supports an identical
+  setting](https://docs.posit.co/rspm/news/package-manager/#posit-package-manager-2024040).
 
 * Encryption for Workbench uses AES-128-CBC.
 
