@@ -1,4 +1,4 @@
-// Copyright 2022 RStudio, PBC
+// Copyright 2025 Posit Software, PBC
 // SPDX-License-Identifier: Apache-2.0
 
 package cmd
@@ -19,7 +19,7 @@ import (
 var encryptCmd = &cobra.Command{
 	Use:   "encrypt",
 	Short: "Encrypt sensitive data",
-	Long: `Use a RStudio Connect/Package Manager key to encrypt data
+	Long: `Use a Posit Connect/Package Manager key to encrypt data
 interactively. Line-separated data can also be passed on standard input.
 
 Examples:

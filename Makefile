@@ -9,7 +9,7 @@ GO_BUILD_ARGS = -v -tags "netgo" -trimpath
 
 GOPATH = $(shell go env GOPATH)
 ADDLICENSE = $(GOPATH)/bin/addlicense
-ADDLICENSE_ARGS = -v -s=only -l=apache -c "RStudio, PBC" -ignore 'coverage*' -ignore '.github/**' -ignore '.goreleaser.yaml'
+ADDLICENSE_ARGS = -v -s=only -l=apache -c "Posit Software, PBC" -ignore 'coverage*' -ignore '.github/**' -ignore '.goreleaser.yaml'
 NOTICETOOL = $(GOPATH)/bin/go-licence-detector
 
 all: rskey

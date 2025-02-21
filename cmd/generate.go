@@ -1,4 +1,4 @@
-// Copyright 2022 RStudio, PBC
+// Copyright 2025 Posit Software, PBC
 // SPDX-License-Identifier: Apache-2.0
 
 package cmd
@@ -15,7 +15,7 @@ import (
 var generateCmd = &cobra.Command{
 	Use:   "generate",
 	Short: "Generate new keys",
-	Long: `Write a newly-generated RStudio Connect/Package Manager key to
+	Long: `Write a newly-generated Posit Connect/Package Manager key to
 standard output, or a given output file.
 
 Examples:
