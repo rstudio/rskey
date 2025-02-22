@@ -28,10 +28,20 @@ No local license keys are required, either.
 Binary releases for Windows, macOS, and Linux are available [on
 GitHub](https://github.com/rstudio/rskey/releases).
 
+We also distribute special `rskey-fips` builds for FIPS 140-3 compliance. These
+are compiled against the [Go Cryptographic
+Module](https://go.dev/doc/security/fips140).
+
 If you have a local Go toolchain you can also install via `go install`:
 
 ``` shell
 $ go install github.com/rstudio/rskey@latest
+```
+
+or, for a FIPS-compliant version:
+
+``` shell
+$ GOFIPS140=v1.0.0 go install github.com/rstudio/rskey@latest
 ```
 
 Binary releases are signed with [Sigstore](https://www.sigstore.dev/). You can
@@ -85,7 +95,7 @@ Package Manager [version 2024.04.0 and
 later](https://docs.posit.co/rspm/news/package-manager/#posit-package-manager-2024040)
 support an alternative encryption algorithm, AES-256-GCM. This algorithm is an
 Approved Security Function under [Federal Information Processing Standard
-140](https://csrc.nist.gov/publications/detail/fips/140/3/final) (FIPS), unlike
+140-3](https://csrc.nist.gov/publications/detail/fips/140/3/final) (FIPS), unlike
 the default.
 
 If you prefer to encrypt secrets using this algorithm and are using this version
@@ -98,6 +108,9 @@ $ rskey encrypt -f connect.key --mode=fips
 
 `rskey decrypt` does not require this flag because the algorithm in use can be
 determined from the encrypted output.
+
+When using the special `rskey-fips` builds, FIPS mode is the default, and
+attempts to decrypt data encryped with a non-FIPS-140-3 algorithm will fail.
 
 ### Workbench
 
@@ -128,8 +141,9 @@ $ rskey encrypt --mode=workbench -f uuid.key
   algorithm](https://docs.posit.co/connect/news/#rstudio-connect-2022.03.0),
   AES-256-GCM. This algorithm is an Approved Security Function under [Federal
   Information Processing Standard
-  140](https://csrc.nist.gov/publications/detail/fips/140/3/final), and can be
-  used by passing `--mode=fips` to the `rskey encrypt` command.
+  140-3](https://csrc.nist.gov/publications/detail/fips/140/3/final), and can be
+  used by passing `--mode=fips` to the `rskey encrypt` command, or by using the
+  special `rskey-fips` builds.
 
 * Package Manager version 2024.04.0 and later [supports an identical
   setting](https://docs.posit.co/rspm/news/package-manager/#posit-package-manager-2024040).

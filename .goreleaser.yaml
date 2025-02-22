@@ -18,8 +18,21 @@ builds:
   ldflags:
   - -s -w -X github.com/rstudio/rskey/cmd.Version={{ .Version }}
   mod_timestamp: '{{ .CommitTimestamp }}'
+- id: rskey-fips
+  env:
+  - CGO_ENABLED=0
+  - GOFIPS140=latest
+  flags:
+  - -trimpath
+  ldflags:
+  - -s -w -X github.com/rstudio/rskey/cmd.Version={{ .Version }}
+  mod_timestamp: "{{ .CommitTimestamp }}"
+  targets:
+  - linux_amd64
 archives:
-- files:
+- builds:
+  - rskey
+  files:
   - LICENSE
   - README.md
   - NOTICE.md
@@ -27,6 +40,14 @@ archives:
   - goos: windows
     formats:
     - zip
+- id: fips
+  builds:
+  - rskey-fips
+  files:
+  - LICENSE
+  - README.md
+  - NOTICE.md
+  name_template: "{{ .ProjectName }}-fips_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 blobs:
 - provider: s3
   bucket: rstudio-platform-public-artifacts
@@ -68,6 +89,30 @@ nfpms:
   description: |
     A command-line tool that generates secret keys interoperable with the format
     used by Posit's Workbench, Connect, and Package Manager products.
+  contents:
+  - src: LICENSE
+    dst: /usr/share/doc/rskey/LICENSE
+  - src: README.md
+    dst: /usr/share/doc/rskey/README.md
+  - src: NOTICE.md
+    dst: /usr/share/doc/rskey/NOTICE.md
+- id: fips
+  package_name: rskey-fips
+  builds:
+  - rskey-fips
+  formats:
+  - deb
+  - rpm
+  conflicts:
+  - rskey
+  replaces:
+  - rskey
+  section: devel
+  maintainer: "Posit Software, PBC <info@posit.co>"
+  description: |
+    A command-line tool that generates secret keys interoperable with the format
+    used by Posit's Workbench, Connect, and Package Manager products. This is
+    the FIPS-compliant variant.
   contents:
   - src: LICENSE
     dst: /usr/share/doc/rskey/LICENSE

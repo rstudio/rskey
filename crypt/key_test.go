@@ -4,6 +4,8 @@
 package crypt
 
 import (
+	"crypto/fips140"
+	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 	"strings"
@@ -110,7 +112,7 @@ func (s *KeySuite) TestEncryption(c *check.C) {
 
 	// These payloads do not have a the FIPS version prefix, so they will
 	// generate a different error in FIPS mode.
-	if !FIPSMode {
+	if !fips140.Enabled() {
 		_, err = key.Decrypt("ycKfTfYlVaOnsypb")
 		c.Check(err, check.Equals, ErrPayLoadTooShort)
 
@@ -133,7 +135,7 @@ func (s *KeySuite) TestEncryption(c *check.C) {
 }
 
 func (s *KeySuite) TestVersionedEncryption(c *check.C) {
-	if FIPSMode {
+	if fips140.Enabled() {
 		c.ExpectFailure("NaCl encryption will not work under FIPS")
 	}
 	key, _ := NewKey()
@@ -147,16 +149,14 @@ func (s *KeySuite) TestVersionedEncryption(c *check.C) {
 	c.Check(err, check.Equals, ErrFailedToDecrypt)
 
 	// Roundtrip encryption test.
-	cipher, err := key.encryptVersioned("some secret")
-	c.Check(err, check.IsNil)
+	cipher := key.encryptVersioned("some secret")
 	c.Check(cipher, check.Not(check.Equals), "some secret") // Just checking.
 	text, err := key.Decrypt(cipher)
 	c.Check(err, check.IsNil)
 	c.Check(text, check.Equals, "some secret")
 
 	// Check that nonces actually work.
-	dupCipher, err := key.encryptVersioned("some secret")
-	c.Check(err, check.IsNil)
+	dupCipher := key.encryptVersioned("some secret")
 	c.Check(dupCipher, check.Not(check.Equals), cipher)
 }
 
@@ -201,6 +201,45 @@ func (s *KeySuite) TestFIPSEncryption(c *check.C) {
 	dupCipher, err := key.EncryptFIPS("some secret")
 	c.Check(err, check.IsNil)
 	c.Check(dupCipher, check.Not(check.Equals), cipher)
+
+	// Check that explicitly setting FIPS mode switches the algorithm.
+	originalMode := fipsMode
+	fipsMode = true
+	defer func() { fipsMode = originalMode }()
+	cipher, err = key.Encrypt("some secret")
+	c.Check(err, check.IsNil)
+	buf, _ := base64.StdEncoding.DecodeString(cipher)
+	c.Check(buf[0], check.Equals, byte(2))
+}
+
+func (s *KeySuite) TestFIPSMode(c *check.C) {
+	originalMode := fipsMode
+	fipsMode = true
+	defer func() { fipsMode = originalMode }()
+	key, _ := NewKey()
+
+	// Check that explicitly setting FIPS mode ensures we use AES.
+	cipher, err := key.Encrypt("some secret")
+	c.Check(err, check.IsNil)
+	buf, _ := base64.StdEncoding.DecodeString(cipher)
+	c.Check(buf[0], check.Equals, byte(2))
+
+	// Check that non-AES ciphers cannot be decrypted in this mode.
+	cipher = key.encryptVersioned("some secret")
+	_, err = key.Decrypt(cipher)
+	c.Check(err, check.Equals, ErrFIPS)
+}
+
+func (s *KeySuite) TestFIPSCompliance(c *check.C) {
+	// Verify that non-FIPS algorithms can't be called through the public
+	// API in this mode.
+	if !fips140.Enabled() {
+		c.Skip("skipping FIPS 140-3 compliance tests")
+	}
+	key, _ := NewKey()
+	cipher := key.encryptVersioned("some secret")
+	_, err := key.Decrypt(cipher)
+	c.Check(err, check.Equals, ErrFIPS)
 }
 
 func (s *KeySuite) TestFingerprint(c *check.C) {
