@@ -1,9 +1,6 @@
 // Copyright 2025 Posit Software, PBC
 // SPDX-License-Identifier: Apache-2.0
 
-//go:build !fips
-// +build !fips
-
 package crypt
 
 import (
@@ -12,24 +9,19 @@ import (
 	"golang.org/x/crypto/nacl/secretbox"
 )
 
-// When true, this package has been built in "FIPS mode". Attempts to use
-// encryption algorithms not permissible under FIPS-140 regulations will always
-// fail, and encryption will use AES-256-GCM by default.
-const FIPSMode = false
-
 const (
 	// The overhead length plus the nonce length.
 	minimumSecretboxLength = secretbox.Overhead + 24
 )
 
-func (k *Key) encryptSecretbox(bytes []byte) ([]byte, error) {
+func (k *Key) encryptSecretbox(bytes []byte) []byte {
 	var nonce [24]byte
 	// As of Go 1.24, rand.Read() aborts rather than returning an error.
 	// See: https://go.dev/issue/66821
 	_, _ = rand.Read(nonce[:])
 	output := secretbox.Seal(nil, bytes, &nonce, k.key32())
 	output = append(nonce[:], output...)
-	return output, nil
+	return output
 }
 
 func (k *Key) decryptSecretbox(buf []byte) ([]byte, error) {
