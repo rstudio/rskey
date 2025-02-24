@@ -33,7 +33,7 @@ func runGenerate(cmd *cobra.Command, args []string) error {
 	s := key.HexString()
 	outfile := cmd.Flag("output").Value.String()
 	if outfile == "" {
-		fmt.Fprintf(cmd.OutOrStdout(), s)
+		fmt.Fprint(cmd.OutOrStdout(), s)
 		return nil
 	}
 	err = os.WriteFile(outfile, []byte(s), 0600)
