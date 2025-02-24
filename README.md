@@ -38,15 +38,14 @@ Binary releases are signed with [Sigstore](https://www.sigstore.dev/). You can
 verify these signatures with their `cosign` tool, for example:
 
 ``` shell
-$ COSIGN_EXPERIMENTAL=1 cosign verify-blob \
+$ cosign verify-blob \
   --signature rskey_0.5.0_linux_amd64.tar.gz.sig \
   rskey_0.5.0_linux_amd64.tar.gz
 ```
 
-We use Cosign's ["keyless"](https://docs.sigstore.dev/cosign/openid_signing)
+We use Cosign's ["keyless"](https://docs.sigstore.dev/cosign/signing/overview/)
 mode, which uses the OpenID Connect tokens issued by GitHub for this repository
-and ephemeral certificates instead of private keys. This feature currently
-requires setting `COSIGN_EXPERIMENTAL=1`.
+and ephemeral certificates instead of private keys.
 
 ## Usage
 
