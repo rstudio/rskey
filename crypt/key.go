@@ -7,7 +7,7 @@ package crypt
 
 import (
 	"crypto/rand"
-	"crypto/sha1"
+	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
 	"errors"
@@ -177,7 +177,7 @@ func (k *Key) DecryptBytes(s string) ([]byte, error) {
 // convenient identifier in logs and API responses to aid in key rotation.
 func (k *Key) Fingerprint() string {
 	// note: the fingerprint is a hash of the rotated, not original, key data
-	return fmt.Sprintf("%x", sha1.Sum(k[:]))
+	return fmt.Sprintf("%x", sha256.Sum256(k[:]))
 }
 
 func rotate(data []byte) []byte {
