@@ -1,11 +1,8 @@
 VERSION := $(shell git describe --always --dirty --tags)
 
-CGO_ENABLED = 0
 # Strip binaries by default to make them smaller.
 GO_LDFLAGS = -s -w -X github.com/rstudio/rskey/cmd.Version=$(VERSION)
-# Using the 'netgo' tag opts into the native implementation and allows for
-# static binaries.
-GO_BUILD_ARGS = -v -tags "netgo" -trimpath
+GO_BUILD_ARGS = -v -trimpath
 
 GOPATH = $(shell go env GOPATH)
 ADDLICENSE = $(GOPATH)/bin/addlicense
@@ -16,8 +13,7 @@ all: rskey
 
 .PHONY: rskey
 rskey:
-	CGO_ENABLED=$(CGO_ENABLED) go build \
-		-ldflags="$(GO_LDFLAGS)" $(GO_BUILD_ARGS) -o $@ ./$<
+	CGO_ENABLED=0 go build -ldflags="$(GO_LDFLAGS)" $(GO_BUILD_ARGS) -o $@ ./$<
 
 .PHONY: static-build
 static-build: rskey
