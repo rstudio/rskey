@@ -14,8 +14,6 @@ builds:
   ldflags:
   - -s -w -X github.com/rstudio/rskey/cmd.Version={{ .Version }}
   mod_timestamp: '{{ .CommitTimestamp }}'
-  tags:
-  - netgo
 archives:
 - files:
   - LICENSE
