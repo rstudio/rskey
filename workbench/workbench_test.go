@@ -106,19 +106,6 @@ func (s *WorkbenchSuite) TestEncryption(c *check.C) {
 	c.Check(len(c2), check.Not(check.Equals), len(c1))
 }
 
-func (s *WorkbenchSuite) TestEntropyFailure(c *check.C) {
-	// Swap out the standard library's crypto reader so we can simulate a
-	// failure to generate random bits.
-	randReader := rand.Reader
-	rand.Reader = &errReader{}
-	defer func() { rand.Reader = randReader }()
-
-	k, _ := NewKeyFromBytes([]byte(sampleKey))
-	_, err := k.Encrypt("some secret")
-	c.Check(err, check.Not(check.IsNil))
-	c.Check(err, check.ErrorMatches, `cannot read`)
-}
-
 func (s *WorkbenchSuite) TestFingerprint(c *check.C) {
 	key, err := NewKeyFromBytes([]byte(sampleKey))
 	c.Check(err, check.IsNil)

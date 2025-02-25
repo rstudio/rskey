@@ -39,11 +39,14 @@ var (
 // secret when encrypting data.
 type Key [KeyLength]byte
 
-// NewKey returns a newly-generated key, or an error if one cannot be generated.
+// NewKey returns a newly-generated key. It never returns an error, despite its
+// function signature.
 func NewKey() (*Key, error) {
 	var key Key
-	_, err := rand.Read(key[:])
-	return &key, err
+	// As of Go 1.24, rand.Read() aborts rather than returning an error.
+	// See: https://go.dev/issue/66821
+	_, _ = rand.Read(key[:])
+	return &key, nil
 }
 
 // NewKeyFromBytes returns the key read from the given byte slice, or an error.
@@ -111,12 +114,11 @@ func (k *Key) Encrypt(s string) (string, error) {
 // or an error if one cannot be created.
 func (k *Key) EncryptBytes(bytes []byte) (string, error) {
 	var output []byte
-	var err error
 	if FIPSMode {
-		output, err = k.encryptAES(bytes)
-	} else {
-		output, err = k.encryptSecretbox(bytes)
+		output := k.encryptAES(bytes)
+		return base64.StdEncoding.EncodeToString(output), nil
 	}
+	output, err := k.encryptSecretbox(bytes)
 	if err != nil {
 		return "", err
 	}
