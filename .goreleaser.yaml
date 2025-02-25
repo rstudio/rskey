@@ -1,3 +1,4 @@
+version: 2
 before:
   hooks:
   - go mod tidy
@@ -24,11 +25,12 @@ archives:
   - NOTICE.md
   format_overrides:
   - goos: windows
-    format: zip
+    formats:
+    - zip
 blobs:
 - provider: s3
   bucket: rstudio-platform-public-artifacts
-  folder: "platform/rskey/{{ .Version }}"
+  directory: "platform/rskey/{{ .Version }}"
 release:
   draft: true
   header: |
