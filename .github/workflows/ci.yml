@@ -33,3 +33,9 @@ jobs:
       run: make check
     - name: Check Licenses
       run: make check-license
+    - name: GoReleaser Dry-run
+      uses: goreleaser/goreleaser-action@v5
+      with:
+        distribution: goreleaser
+        version: v2
+        args: release --snapshot --skip=before,sign

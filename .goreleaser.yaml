@@ -56,3 +56,22 @@ signs:
   artifacts: all
 source:
   enabled: true
+nfpms:
+- id: rskey
+  builds:
+  - rskey
+  formats:
+  - deb
+  - rpm
+  section: devel
+  maintainer: "Posit Software, PBC <info@posit.co>"
+  description: |
+    A command-line tool that generates secret keys interoperable with the format
+    used by Posit's Workbench, Connect, and Package Manager products.
+  contents:
+  - src: LICENSE
+    dst: /usr/share/doc/rskey/LICENSE
+  - src: README.md
+    dst: /usr/share/doc/rskey/README.md
+  - src: NOTICE.md
+    dst: /usr/share/doc/rskey/NOTICE.md
