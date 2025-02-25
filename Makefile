@@ -9,11 +9,16 @@ ADDLICENSE = go tool github.com/google/addlicense
 ADDLICENSE_ARGS = -v -s=only -l=apache -c "Posit Software, PBC" -ignore 'coverage*' -ignore '.github/**' -ignore '.goreleaser.yaml'
 NOTICETOOL = go tool go.elastic.co/go-licence-detector
 
-all: rskey
+all: rskey rskey-fips
 
 .PHONY: rskey
 rskey:
 	CGO_ENABLED=0 go build -ldflags="$(GO_LDFLAGS)" $(GO_BUILD_ARGS) -o $@ ./$<
+
+.PHONY: rskey-fips
+rskey-fips:
+	CGO_ENABLED=$(CGO_ENABLED) GOFIPS140=latest go build \
+		-ldflags="$(GO_LDFLAGS)" $(GO_BUILD_ARGS) -o $@ ./$<
 
 .PHONY: static-build
 static-build: rskey
@@ -25,7 +30,7 @@ check: fmt vet
 test:
 	go test ./... $(GO_BUILD_ARGS) -coverprofile coverage.out
 	go tool cover -html=coverage.out -o coverage.html
-	go test ./... $(GO_BUILD_ARGS) -tags "fips" -coverprofile coverage-fips.out
+	GOFIPS140=latest go test ./... $(GO_BUILD_ARGS) -coverprofile coverage-fips.out
 	go tool cover -html=coverage-fips.out -o coverage-fips.html
 
 .PHONY: fmt
