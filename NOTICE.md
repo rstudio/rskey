@@ -199,14 +199,14 @@ Contents of probable licence file $GOMODCACHE/github.com/spf13/cobra@v1.4.0/LICE
 
 ### golang.org/x/crypto
 
-Version: v0.0.0-20220112180741-5e0467b6c7ce
-Time: 2022-01-12T18:07:41Z
+Version: v0.31.0
+Time: 2024-12-11T17:50:49Z
 Licence: BSD-3-Clause
 
 ```
-Contents of probable licence file $GOMODCACHE/golang.org/x/crypto@v0.0.0-20220112180741-5e0467b6c7ce/LICENSE:
+Contents of probable licence file $GOMODCACHE/golang.org/x/crypto@v0.31.0/LICENSE:
 
-Copyright (c) 2009 The Go Authors. All rights reserved.
+Copyright 2009 The Go Authors.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -218,7 +218,7 @@ notice, this list of conditions and the following disclaimer.
 copyright notice, this list of conditions and the following disclaimer
 in the documentation and/or other materials provided with the
 distribution.
-   * Neither the name of Google Inc. nor the names of its
+   * Neither the name of Google LLC nor the names of its
 contributors may be used to endorse or promote products derived from
 this software without specific prior written permission.
 
@@ -237,14 +237,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ### golang.org/x/term
 
-Version: v0.0.0-20210927222741-03fcf44c2211
-Time: 2021-09-27T22:27:41Z
+Version: v0.27.0
+Time: 2024-12-04T16:04:05Z
 Licence: BSD-3-Clause
 
 ```
-Contents of probable licence file $GOMODCACHE/golang.org/x/term@v0.0.0-20210927222741-03fcf44c2211/LICENSE:
+Contents of probable licence file $GOMODCACHE/golang.org/x/term@v0.27.0/LICENSE:
 
-Copyright (c) 2009 The Go Authors. All rights reserved.
+Copyright 2009 The Go Authors.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
@@ -256,7 +256,7 @@ notice, this list of conditions and the following disclaimer.
 copyright notice, this list of conditions and the following disclaimer
 in the documentation and/or other materials provided with the
 distribution.
-   * Neither the name of Google Inc. nor the names of its
+   * Neither the name of Google LLC nor the names of its
 contributors may be used to endorse or promote products derived from
 this software without specific prior written permission.
 
