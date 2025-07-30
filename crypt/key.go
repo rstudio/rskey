@@ -3,9 +3,14 @@
 
 // Package crypt implements the secret key-based encryption and decryption
 // scheme used by Posit's Connect and Package Manager products.
+//
+// When fips140.Enabled() is true, decrypting data that uses non-compliant
+// algorithms instead returns an error, and all encryption uses AES-256-GCM by
+// default.
 package crypt
 
 import (
+	"crypto/fips140"
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
@@ -110,31 +115,24 @@ func (k *Key) Encrypt(s string) (string, error) {
 	return k.EncryptBytes([]byte(s))
 }
 
-// EncryptBytes produces base64-encoded cipher text for the given bytes and key,
-// or an error if one cannot be created.
+// EncryptBytes produces base64-encoded cipher text for the given bytes and key.
+// It never returns an error.
 func (k *Key) EncryptBytes(bytes []byte) (string, error) {
-	var output []byte
-	if FIPSMode {
+	if fipsMode {
 		output := k.encryptAES(bytes)
 		return base64.StdEncoding.EncodeToString(output), nil
 	}
-	output, err := k.encryptSecretbox(bytes)
-	if err != nil {
-		return "", err
-	}
+	output := k.encryptSecretbox(bytes)
 	return base64.StdEncoding.EncodeToString(output), nil
 }
 
 // encryptVersioned produces a base64-encoded cipher text with an embedded
-// version for the given payload and key, or an error if one cannot be created.
-// This emulates the format used by some implementations.
-func (k *Key) encryptVersioned(s string) (string, error) {
-	output, err := k.encryptSecretbox([]byte(s))
-	if err != nil {
-		return "", err
-	}
+// version for the given payload and key. This emulates the format used by some
+// implementations.
+func (k *Key) encryptVersioned(s string) string {
+	output := k.encryptSecretbox([]byte(s))
 	output = append([]byte{1}, output...)
-	return base64.StdEncoding.EncodeToString(output), nil
+	return base64.StdEncoding.EncodeToString(output)
 }
 
 // Decrypt takes base64-encoded cipher text encrypted with the given key and
@@ -158,15 +156,21 @@ func (k *Key) DecryptBytes(s string) ([]byte, error) {
 	// handle the (unlikely but possible) case where a versionless payload
 	// *just happens* to start with a valid version byte, we must also try
 	// the fallback on error.
+	//
+	// Unless we're in FIPS mode, in which case only the AES version is
+	// available.
+	if fipsMode && buf[0] != byte(2) {
+		return []byte{}, ErrFIPS
+	}
 	switch buf[0] {
 	case byte(1):
 		str, err := k.decryptSecretbox(buf[1:])
-		if err == nil || FIPSMode {
+		if err == nil || fipsMode {
 			return str, err
 		}
 	case byte(2):
 		str, err := k.decryptAES(buf)
-		if err == nil || FIPSMode {
+		if err == nil || fipsMode {
 			return str, err
 		}
 	}
@@ -190,4 +194,13 @@ func rotate(data []byte) []byte {
 		newData[i] = newData[i] ^ xor[i%len(xor)]
 	}
 	return newData
+}
+
+// Deprecated. Use fips140.Enabled() instead.
+const FIPSMode = false
+
+var fipsMode = false
+
+func init() {
+	fipsMode = fips140.Enabled()
 }
