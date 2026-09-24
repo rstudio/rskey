@@ -25,7 +25,7 @@ check: fmt vet
 test:
 	go test ./... $(GO_BUILD_ARGS) -coverprofile coverage.out
 	go tool cover -html=coverage.out -o coverage.html
-	go test ./... $(GO_BUILD_ARGS) -tags "fips" -coverprofile coverage-fips.out
+	GOFIPS140=certified GODEBUG=fips140=only go test ./... $(GO_BUILD_ARGS) -tags "fips" -coverprofile coverage-fips.out
 	go tool cover -html=coverage-fips.out -o coverage-fips.html
 
 .PHONY: fmt
