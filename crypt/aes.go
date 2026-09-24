@@ -6,7 +6,6 @@ package crypt
 import (
 	"crypto/aes"
 	"crypto/cipher"
-	"crypto/rand"
 	"encoding/base64"
 )
 
@@ -29,13 +28,7 @@ func (k *Key) EncryptBytesFIPS(bytes []byte) (string, error) {
 }
 
 func (k *Key) encryptAES(bytes []byte) []byte {
-	nonce := make([]byte, 12)
-	// As of Go 1.24, rand.Read() aborts rather than returning an error.
-	// See: https://go.dev/issue/66821
-	_, _ = rand.Read(nonce)
-	aead := k.newAESGCM()
-	output := aead.Seal(nil, nonce, bytes, nil)
-	output = append(nonce, output...)
+	output := k.newAESGCM().Seal(nil, nil, bytes, nil)
 	// Append a version prefix.
 	output = append([]byte{2}, output...)
 	return output
@@ -47,11 +40,7 @@ func (k *Key) decryptAES(buf []byte) ([]byte, error) {
 	}
 
 	// Note: We're skipping the version prefix here.
-	nonce := make([]byte, 12)
-	copy(nonce, buf[1:13])
-
-	aead := k.newAESGCM()
-	bytes, err := aead.Open(nil, nonce, buf[13:], nil)
+	bytes, err := k.newAESGCM().Open(nil, nil, buf[1:], nil)
 	if err != nil {
 		return []byte{}, ErrFailedToDecrypt
 	}
@@ -62,6 +51,6 @@ func (k *Key) newAESGCM() cipher.AEAD {
 	// The only way either of these can error is by having an incorrect byte
 	// slice length or algorithm.
 	block, _ := aes.NewCipher(k[0:32])
-	aead, _ := cipher.NewGCM(block)
+	aead, _ := cipher.NewGCMWithRandomNonce(block)
 	return aead
 }

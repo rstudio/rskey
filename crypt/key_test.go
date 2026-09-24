@@ -189,11 +189,17 @@ func (s *KeySuite) TestFIPSEncryption(c *check.C) {
 	_, err = key.Decrypt("AnZYqAlPrCtkD7qOPUY3TbUD5HBqdIx6YZJtPomguh8IHJMmPtjuew==")
 	c.Check(err, check.Equals, ErrFailedToDecrypt)
 
+	// A known payload, to guard against changes to the format.
+	sample, _ := NewKeyFromBytes([]byte(sampleKey))
+	text, err := sample.Decrypt("Auyssi10Q6igN1vx2AzvyXgo9Tc3oKat1YKQMVsBbflXqY24TDjX4g==")
+	c.Check(err, check.IsNil)
+	c.Check(text, check.Equals, "some secret")
+
 	// Roundtrip encryption test.
 	cipher, err := key.EncryptFIPS("some secret")
 	c.Check(err, check.IsNil)
 	c.Check(cipher, check.Not(check.Equals), "some secret") // Just checking.
-	text, err := key.Decrypt(cipher)
+	text, err = key.Decrypt(cipher)
 	c.Check(err, check.IsNil)
 	c.Check(text, check.Equals, "some secret")
 
