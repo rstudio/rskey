@@ -4,6 +4,7 @@
 package cmd
 
 import (
+	"crypto/fips140"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -24,5 +25,11 @@ func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
+	}
+}
+
+func init() {
+	if fips140.Enabled() {
+		rootCmd.Version = rootCmd.Version + " (fips)"
 	}
 }
